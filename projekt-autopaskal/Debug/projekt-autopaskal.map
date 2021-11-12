@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  c:\users\lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm Thu Nov 11 15:37:19 2021
+AVRASM ver. 2.2.8  C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm Fri Nov 12 21:36:57 2021
 
 
 EQU  SIGNATURE_000 0000001e
@@ -695,4 +695,32 @@ EQU  ACIaddr      0000002e
 EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
-CSEG loop         00000003
+DEF  led_state    r22
+CSEG start        000000f4
+CSEG button_action 00000111
+EQU  baudrate     00002580
+CSEG printstring  00000034
+CSEG stopprinting 0000003a
+CSEG send_char    0000005d
+CSEG send_hex     0000003b
+CSEG manjsa_od_10_1 00000041
+CSEG manjsa_od_10_2 00000049
+CSEG setupUART    0000004d
+CSEG poskusi_poslati 0000005e
+CSEG get_char     00000066
+CSEG vrnise       0000006c
+CSEG div10_8bit   0000006d
+CSEG dobro        0000006f
+CSEG print_8bit_base10 0000007c
+CSEG naslednja_cifra 00000080
+CSEG izpisi_cifre 00000086
+CSEG konec_izpisa 0000008c
+CSEG dump_registers 0000008e
+CSEG naslednji_register 000000b3
+CSEG no_new_line  000000d1
+DSEG StackHI      00000100
+DSEG StackLO      00000101
+CSEG setup        000000f5
+CSEG loop         0000011a
+CSEG turn_on_4    00000109
+CSEG turn_off_4   0000010d
