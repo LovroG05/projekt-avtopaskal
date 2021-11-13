@@ -1,10 +1,10 @@
 
-AVRASM ver. 2.2.8  C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm Fri Nov 12 21:36:57 2021
+AVRASM ver. 2.2.8  C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm Sat Nov 13 21:08:01 2021
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
-C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm(17): Including file 'C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\volcini-default.asm'
+C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm(19): Including file 'C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\volcini-default.asm'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
-C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm(17): Including file 'C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\volcini-default.asm'
+C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm(19): Including file 'C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\volcini-default.asm'
                                  
                                  ;
                                  
@@ -990,17 +990,19 @@ C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\
                                  ; projekt-autopaskal.asm
                                  ;
                                  ; Created: 11. 11. 2021 14:30:11
-                                 ; Author : Lovro
+                                 ; Author : Lovro Govekar
                                  ;
                                  
                                  .def led_state = r22
+                                 .def button_flag = r23
+                                 .def last_button_flag = r21
                                  
                                  
                                  .cseg
                                  	.org 	0x00
 000000 c0f3                      	rjmp start
                                  	.org INT0addr
-000002 c10e                      	rjmp button_action
+000002 c112                      	rjmp button_action
                                  	.org 0x34
                                  	.include "volcini-default.asm"
                                  
@@ -1298,7 +1300,7 @@ C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\
                                  setup:
 0000f5 940e 004d                 	call setupUART
                                  	;clr EICRA
-0000f7 e003                      	ldi r16, (1<<ISC01)|(1<<ISC00)	
+0000f7 e002                      	ldi r16, (1<<ISC01)|(0<<ISC00)	
 0000f8 9300 0069                 	sts EICRA, r16
 0000fa e001                      	ldi r16, (1<<INT0)				
 0000fb bb0d                      	out EIMSK, r16					
@@ -1315,42 +1317,57 @@ C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\
 000102 b904                          out     DDRB,r16		; write register 16 to DDRB
                                      ; out     PORTB,r16	
                                  
-000103 2700                      	clr	r16;,(1<<PIND2)		; load 00000001 into register 16
+000103 2700                      	clr	r16		; load 00000001 into register 16
 000104 b90a                          out DDRD,r16		; write register 16 to DDRB
 000105 e004                      	ldi r16,(1<<PIND2)
 000106 b90b                      	out PORTD, r16
                                  
 000107 e060                      	ldi led_state, 0
+000108 e070                      	ldi button_flag, 0
+000109 2f57                      	mov last_button_flag, button_flag
                                  	;call turn_on_4
                                  
-000108 c011                      	rjmp loop
+00010a c017                      	rjmp loop
                                  
                                  turn_on_4:
-000109 e100                      	ldi	r16,(1<<PINB4)		; load 00000001 into register 16
-00010a b905                      	out PORTB,r16		; write register 16 to PORTB
-00010b e061                      	ldi led_state, 1
-00010c 9518                      	reti
+00010b e100                      	ldi	r16,(1<<PINB4)		; load 00000001 into register 16
+00010c b905                      	out PORTB,r16		; write register 16 to PORTB
+00010d e071                      	ldi button_flag, 1
+00010e 9508                      	ret
                                  
                                  turn_off_4:
-00010d e000                      	ldi	r16,(0<<PINB4)		; load xxxxxxx0 into register 16
-00010e b905                      	out PORTB, r16
-00010f e060                      	ldi led_state, 0
-000110 9508                      	ret
+00010f e000                      	ldi	r16,(0<<PINB4)		; load xxxxxxx0 into register 16
+000110 b905                      	out PORTB, r16
+000111 e070                      	ldi button_flag, 0
+000112 9508                      	ret
+                                 
+                                 set_btn_flag:
+000113 e071                      	ldi button_flag, 1
+000114 9518                      	reti
                                  
                                  button_action:
-000111 e609                      	ldi r16, 'i'
-000112 940e 005d                 	call send_char
-000114 e000                      	ldi r16, 0
-000115 1760                      	cp led_state, r16
-000116 f391                      	breq turn_on_4
-000117 940e 010d                 	call turn_off_4
-000119 9518                      	reti
+000115 e000                      	ldi r16, 0
+000116 1770                      	cp button_flag, r16
+000117 f3d9                      	breq set_btn_flag
+                                 	;ldi button_flag, 0
+000118 9518                      	reti
                                  	
-                                 	
+                                 toggle_led:
+000119 2f57                      	mov last_button_flag, button_flag
                                  
-00011a cfff                      loop:	rjmp    loop			; stay in infinite loop
+00011a e609                      	ldi r16, 'i'
+00011b 940e 005d                 	call send_char
+00011d e000                      	ldi r16, 0
+00011e 1770                      	cp button_flag, r16
+00011f f359                      	breq turn_on_4
+000120 cfee                      	rjmp turn_off_4
+000121 9508                      	ret
                                  
+                                 loop:
+000122 1775                      	cp button_flag, last_button_flag
+000123 f7a9                      	brne toggle_led
                                  
+000124 cffd                      	rjmp    loop			; stay in infinite loop
 
 
 RESOURCE USE INFORMATION
@@ -1370,26 +1387,26 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :   3 r0 :   7 r1 :   7 r2 :   2 r3 :   2 r4 :   2 
 r5 :   2 r6 :   2 r7 :   2 r8 :   2 r9 :   2 r10:   2 r11:   2 r12:   2 
-r13:   2 r14:   2 r15:   2 r16:  68 r17:  18 r18:   8 r19:   6 r20:   2 
-r21:   2 r22:   6 r23:   2 r24:   2 r25:   2 r26:   2 r27:   2 r28:   2 
+r13:   2 r14:   2 r15:   2 r16:  70 r17:  18 r18:   8 r19:   6 r20:   2 
+r21:   5 r22:   3 r23:  11 r24:   2 r25:   2 r26:   2 r27:   2 r28:   2 
 r29:   2 r30:   3 r31:   3 
 Registers used: 33 out of 35 (94.3%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
 andi  :   3 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   2 break :   0 breq  :   3 brge  :   0 brhc  :   0 
+brcc  :   0 brcs  :   2 break :   0 breq  :   4 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   3 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :  17 cbi   :   0 cbr   :   0 
+brne  :   4 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :  16 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   4 cls   :   0 
-clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   1 cpc   :   0 
+clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   3 cpc   :   0 
 cpi   :   3 cpse  :   0 dec   :   2 eor   :   0 fmul  :   0 fmuls :   0 
 fmulsu:   0 icall :   0 ijmp  :   0 in    :   2 inc   :   1 jmp   :   0 
-ld    :   2 ldd   :   0 ldi   :  27 lds   :   3 lpm   :   1 lsl   :   0 
-lsr   :   0 mov   :   6 movw  :   0 mul   :   3 muls  :   0 mulsu :   0 
+ld    :   2 ldd   :   0 ldi   :  30 lds   :   3 lpm   :   1 lsl   :   0 
+lsr   :   0 mov   :   8 movw  :   0 mul   :   3 muls  :   0 mulsu :   0 
 neg   :   0 nop   :   0 or    :   1 ori   :   1 out   :   8 pop   :  38 
-push  :  39 rcall :   0 ret   :   9 reti  :   2 rjmp  :   9 rol   :   0 
+push  :  39 rcall :   0 ret   :  11 reti  :   2 rjmp  :  10 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   2 sec   :   0 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
@@ -1400,7 +1417,7 @@ Instructions used: 31 out of 113 (27.4%)
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000236    466      0    466   32768   1.4%
+[.cseg] 0x000000 0x00024a    486      0    486   32768   1.5%
 [.dseg] 0x000100 0x000102      0      2      2    2048   0.1%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

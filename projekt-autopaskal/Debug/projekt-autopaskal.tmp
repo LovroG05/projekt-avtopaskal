@@ -23,8 +23,8 @@
   <FILE>projekt-autopaskal.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <start><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>21</LINE></start>
-  <button_action><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>66</LINE></button_action>
+  <start><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>23</LINE></start>
+  <button_action><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>74</LINE></button_action>
   <printstring><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\volcini-default.asm</FILE><LINE>26</LINE></printstring>
   <stopprinting><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\volcini-default.asm</FILE><LINE>31</LINE></stopprinting>
   <send_char><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\volcini-default.asm</FILE><LINE>99</LINE></send_char>
@@ -46,9 +46,11 @@
   <no_new_line><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\volcini-default.asm</FILE><LINE>245</LINE></no_new_line>
   <StackHI><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\volcini-default.asm</FILE><LINE>284</LINE></StackHI>
   <StackLO><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\volcini-default.asm</FILE><LINE>285</LINE></StackLO>
-  <setup><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>24</LINE></setup>
-  <loop><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>77</LINE></loop>
-  <turn_on_4><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>54</LINE></turn_on_4>
-  <turn_off_4><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>60</LINE></turn_off_4>
+  <setup><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>26</LINE></setup>
+  <loop><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>92</LINE></loop>
+  <turn_on_4><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>58</LINE></turn_on_4>
+  <turn_off_4><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>64</LINE></turn_off_4>
+  <set_btn_flag><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>70</LINE></set_btn_flag>
+  <toggle_led><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>81</LINE></toggle_led>
  </LABELS>
 </ASSEMBLER_INFO>
