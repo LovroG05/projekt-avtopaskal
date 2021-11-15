@@ -81,13 +81,19 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="main.asm">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="motor.inc">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="some_school_test.asm">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="volcini-default.asm">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="main.asm">
+    <Compile Include="main-old.asm">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
