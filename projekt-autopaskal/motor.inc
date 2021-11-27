@@ -14,7 +14,18 @@
 .endmacro
 
  .macro send_lcd_4bits
-	ldi	r16, @0
-	out PORTD, r16
+	ldi	r20, @0
+	andi r21, 0b1111_0000
+	in r17, PORTD
+	or r17, r21
+	out PORTD, r17
+	toggle_enable_pin
+	andi r21, 0b0000_1111
+	in r17, PORTD
+	or r17, r21
+	out PORTD, r17
 	toggle_enable_pin
 .endmacro
+
+;0010_1000
+; najprej H na pd7-pd4

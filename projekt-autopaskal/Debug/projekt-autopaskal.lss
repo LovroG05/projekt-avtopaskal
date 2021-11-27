@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm Mon Nov 15 15:29:08 2021
+AVRASM ver. 2.2.8  C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm Sat Nov 27 19:51:37 2021
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
 C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm(12): Including file 'C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\motor.inc'
@@ -1014,10 +1014,20 @@ C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\
                                  .endmacro
                                  
                                   .macro send_lcd_4bits
-                                 	ldi	r16, @0
-                                 	out PORTD, r16
+                                 	ldi	r20, @0
+                                 	andi r21, 0b1111_0000
+                                 	in r17, PORTD
+                                 	or r17, r21
+                                 	out PORTD, r17
+                                 	toggle_enable_pin
+                                 	andi r21, 0b0000_1111
+                                 	in r17, PORTD
+                                 	or r17, r21
+                                 	out PORTD, r17
                                  	toggle_enable_pin
                                  .endmacro
+                                 
+                                 ;0010_1000
                                  
                                  start:
                                  	;-----------INITIALIZE STACK POINTER----------------
@@ -1028,113 +1038,104 @@ C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\
                                  	;---------------------------------------------------
                                  
                                  	;-----------SET OUTPUT PINS-------------------------
-                                 	; PB4 - RS display pin
-000038 e100                      	ldi	r16,(1<<PINB4)
-000039 b904                          out DDRB,r16
-00003a b903                      	out PINB,r16 ; set RS to instruction
+                                 	; PD3 - RS display pin
+000038 e008                      	ldi	r16,(1<<PIND3)
+000039 b90a                          out DDRD,r16
+00003a b909                      	out PIND,r16 ; set RS to instruction
                                  
-                                 	; PD6 - D4 display data pin
-00003b e400                      	ldi	r16,(1<<PIND6)
+                                 	; PD4 - D4 display data pin
+00003b e100                      	ldi	r16,(1<<PIND4)
 00003c b90a                          out DDRD,r16
                                  
                                  	; PD5 - D5 display data pin
 00003d e200                      	ldi	r16,(1<<PIND5)
 00003e b90a                          out DDRD,r16
                                  
-                                 	; PD4 - D6 display data pin
-00003f e100                      	ldi	r16,(1<<PIND4)
+                                 	; PD6 - D6 display data pin
+00003f e400                      	ldi	r16,(1<<PIND6)
 000040 b90a                          out DDRD,r16
                                  
-                                 	; PD3 - D7 display data pin
-000041 e008                      	ldi	r16,(1<<PIND3)
+                                 	; PD7 - D7 display data pin
+000041 e800                      	ldi	r16,(1<<PIND7)
 000042 b90a                          out DDRD,r16
                                  
-                                 	; PB3 - ENABLE display pin
-000043 e008                      	ldi	r16,(1<<PINB3)
+                                 	; PB0 - ENABLE display pin
+000043 e001                      	ldi	r16,(1<<PINB0)
 000044 b904                          out DDRB,r16
                                  	;---------------------------------------------------
-000045 940e 0094                 	call delay_1ms
-000047 940e 0094                 	call delay_1ms
-000049 940e 0094                 	call delay_1ms
-00004b 940e 0094                 	call delay_1ms
-00004d 940e 0094                 	call delay_1ms
-00004f 940e 0094                 	call delay_1ms
-000051 940e 0094                 	call delay_1ms
-000053 940e 0094                 	call delay_1ms
-000055 940e 0094                 	call delay_1ms
-000057 940e 0094                 	call delay_1ms
-000059 940e 0094                 	call delay_1ms
-00005b 940e 0094                 	call delay_1ms
-00005d 940e 0094                 	call delay_1ms
-00005f 940e 0094                 	call delay_1ms
-000061 940e 0094                 	call delay_1ms
+000045 940e 0092                 	call delay_1ms
+000047 940e 0092                 	call delay_1ms
+000049 940e 0092                 	call delay_1ms
+00004b 940e 0092                 	call delay_1ms
+00004d 940e 0092                 	call delay_1ms
+00004f 940e 0092                 	call delay_1ms
+000051 940e 0092                 	call delay_1ms
+000053 940e 0092                 	call delay_1ms
+000055 940e 0092                 	call delay_1ms
+000057 940e 0092                 	call delay_1ms
+000059 940e 0092                 	call delay_1ms
+00005b 940e 0092                 	call delay_1ms
+00005d 940e 0092                 	call delay_1ms
+00005f 940e 0092                 	call delay_1ms
+000061 940e 0092                 	call delay_1ms
                                  	; ne tega ni noben vidu ssssssh
                                  
                                  	; function set command
-000063 e008
-000064 b90b
-000065 e008
-000066 b905
-000067 940e 0094
-000069 e000
-00006a b905                      	send_lcd_4bits 0b00001000
-00006b e200
-00006c b90b
-00006d e008
-00006e b905
-00006f 940e 0094
-000071 e000
-000072 b905                      	send_lcd_4bits 0b00100000
+000063 e248
+000064 7f50
+000065 b11b
+000066 2b15
+000067 b91b
+000068 e008
+000069 b905
+00006a 940e 0092
+00006c e000
+00006d b905
+00006e 705f
+00006f b11b
+000070 2b15
+000071 b91b
+000072 e008
+000073 b905
+000074 940e 0092
+000076 e000
+000077 b905                      	send_lcd_4bits 0b0010_1000
+000078 940e 0092                 	call delay_1ms
                                  
-                                 	; clear display command
-                                 	;send_lcd_4bits 0b00000000
-                                 	;send_lcd_4bits 0b00001000
-                                 
-                                 	; display on/off command
-000073 e000
-000074 b90b
-000075 e008
-000076 b905
-000077 940e 0094
-000079 e000
-00007a b905                      	send_lcd_4bits 0b00000000
-00007b e708
-00007c b90b
-00007d e008
-00007e b905
-00007f 940e 0094
-000081 e000
-000082 b905                      	send_lcd_4bits 0b01111000
-                                 
-                                 	; clear display command
+                                 	;display on/off command
+00007a e04f
+00007b 7f50
+00007c b11b
+00007d 2b15
+00007e b91b
+00007f e008
+000080 b905
+000081 940e 0092
 000083 e000
-000084 b90b
-000085 e008
-000086 b905
-000087 940e 0094
-000089 e000
-00008a b905                      	send_lcd_4bits 0b00000000
-00008b e008
-00008c b90b
-00008d e008
-00008e b905
-00008f 940e 0094
-000091 e000
-000092 b905                      	send_lcd_4bits 0b00001000
-                                 
-000093 c00a                      	rjmp loop
+000084 b905
+000085 705f
+000086 b11b
+000087 2b15
+000088 b91b
+000089 e008
+00008a b905
+00008b 940e 0092
+00008d e000
+00008e b905                      	send_lcd_4bits 0b0000_1111
+00008f 940e 0092                 	call delay_1ms
+000091 c00a                      	rjmp loop
                                  
                                  delay_1ms:
-000094 e125                      	ldi  r18, 21
-000095 ec37                      	ldi  r19, 199
-000096 940e 0099                 	call L1
-000098 9508                      	ret
+000092 e125                      	ldi  r18, 21
+000093 ec37                      	ldi  r19, 199
+000094 940e 0097                 	call L1
+000096 9508                      	ret
                                  
-000099 953a                      L1: dec  r19
-00009a f7f1                          brne L1
-00009b 952a                          dec  r18
-00009c f7e1                          brne L1
-00009d 9508                      	ret
+000097 953a                      L1: dec  r19
+000098 f7f1                          brne L1
+000099 952a                          dec  r18
+00009a f7e1                          brne L1
+00009b 9508                      	ret
                                  
                                  loop:
 
@@ -1156,14 +1157,14 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  53 r17:   0 r18:   2 r19:   2 r20:   0 
-r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
+r13:   0 r14:   0 r15:   0 r16:  33 r17:  12 r18:   2 r19:   2 r20:   2 
+r21:   8 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
 r29:   0 r30:   0 r31:   0 
-Registers used: 3 out of 35 (8.6%)
+Registers used: 6 out of 35 (17.1%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
-andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+andi  :   4 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
 brne  :   2 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
@@ -1171,22 +1172,22 @@ brvs  :   0 bset  :   0 bst   :   0 call  :  22 cbi   :   0 cbr   :   0
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
 cpi   :   0 cpse  :   0 dec   :   2 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :   0 
-ld    :   0 ldd   :   0 ldi   :  28 lds   :   0 lpm   :   0 lsl   :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   4 inc   :   0 jmp   :   0 
+ld    :   0 ldd   :   0 ldi   :  20 lds   :   0 lpm   :   0 lsl   :   0 
 lsr   :   0 mov   :   0 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   0 or    :   0 ori   :   0 out   :  27 pop   :   0 
+neg   :   0 nop   :   0 or    :   4 ori   :   0 out   :  21 pop   :   0 
 push  :   0 rcall :   0 ret   :   2 reti  :   0 rjmp  :   3 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
 sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   0 
 sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
-Instructions used: 7 out of 113 (6.2%)
+Instructions used: 10 out of 113 (8.8%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x00013e    216      0    216   32768   0.7%
+[.cseg] 0x000000 0x00013a    212      0    212   32768   0.6%
 [.dseg] 0x000100 0x000100      0      0      0    2048   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

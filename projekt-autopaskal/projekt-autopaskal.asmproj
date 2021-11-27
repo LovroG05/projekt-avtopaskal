@@ -87,9 +87,6 @@
     <Compile Include="motor.inc">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="some_school_test.asm">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="volcini-default.asm">
       <SubType>Code</SubType>
     </Compile>

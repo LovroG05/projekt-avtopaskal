@@ -24,8 +24,8 @@
  </OUTPUT_FILES>
  <LABELS>
   <start><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>14</LINE></start>
-  <delay_1ms><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>83</LINE></delay_1ms>
-  <loop><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>95</LINE></loop>
-  <L1><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>89</LINE></L1>
+  <delay_1ms><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>74</LINE></delay_1ms>
+  <loop><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>86</LINE></loop>
+  <L1><FILE>C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm</FILE><LINE>80</LINE></L1>
  </LABELS>
 </ASSEMBLER_INFO>
