@@ -1,10 +1,10 @@
 
-AVRASM ver. 2.2.8  C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm Sat Nov 27 19:51:37 2021
+AVRASM ver. 2.2.8  C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm Tue Nov 30 21:52:20 2021
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
-C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm(12): Including file 'C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\motor.inc'
+C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm(12): Including file 'C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\motor.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
-C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm(12): Including file 'C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\motor.inc'
+C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm(12): Including file 'C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\motor.inc'
                                  
                                  /*
                                  
@@ -994,7 +994,7 @@ C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\
                                   */ 
                                  
                                   .cseg
-                                 	.org 	0x00
+                                 	.org 0x00
 000000 c033                      	rjmp start
                                  	.org 0x034
                                  	.include "motor.inc"
@@ -1013,17 +1013,23 @@ C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\
                                  	out PORTB, r16
                                  .endmacro
                                  
-                                  .macro send_lcd_4bits
-                                 	ldi	r20, @0
-                                 	andi r21, 0b1111_0000
-                                 	in r17, PORTD
-                                 	or r17, r21
-                                 	out PORTD, r17
+                                 .macro send_lcd_4bits ; send to lcd in 4bit mode
+                                 	ldi	r20, @0			; naloži parameter (ukaz za lcd) v r20
+                                 	mov r21, r20		; kopira r20 v r21
+                                 	andi r21, 0b1111_0000	; po?isti L ukaza
+                                 	in r17, PORTD		; naloži PORTD v r17
+                                 	andi r17, 0b0000_1111 ; po?isti zgornje bite
+                                 	or r17, r21			; kombinira r17 in r21
+                                 	out PORTD, r17		; nastavi PORTD na r17
                                  	toggle_enable_pin
-                                 	andi r21, 0b0000_1111
-                                 	in r17, PORTD
-                                 	or r17, r21
-                                 	out PORTD, r17
+                                 
+                                 	mov r21, r20		; kopira r20 v r21
+                                 	andi r21, 0b0000_1111	; po?sti H ukaza
+                                 	swap r21			; zamenja H in L nibbla ukaza, da jih pravilno mappa
+                                 	in r17, PORTD		; naloži PORTD v r17
+                                 	andi r17, 0b0000_1111 ; po?isti zgornje bite
+                                 	or r17, r21			; kombinira r17 in r21
+                                 	out PORTD, r17		; nastavi PORTD na r17
                                  	toggle_enable_pin
                                  .endmacro
                                  
@@ -1063,79 +1069,110 @@ C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\
 000043 e001                      	ldi	r16,(1<<PINB0)
 000044 b904                          out DDRB,r16
                                  	;---------------------------------------------------
-000045 940e 0092                 	call delay_1ms
-000047 940e 0092                 	call delay_1ms
-000049 940e 0092                 	call delay_1ms
-00004b 940e 0092                 	call delay_1ms
-00004d 940e 0092                 	call delay_1ms
-00004f 940e 0092                 	call delay_1ms
-000051 940e 0092                 	call delay_1ms
-000053 940e 0092                 	call delay_1ms
-000055 940e 0092                 	call delay_1ms
-000057 940e 0092                 	call delay_1ms
-000059 940e 0092                 	call delay_1ms
-00005b 940e 0092                 	call delay_1ms
-00005d 940e 0092                 	call delay_1ms
-00005f 940e 0092                 	call delay_1ms
-000061 940e 0092                 	call delay_1ms
+000045 940e 00a2                 	call delay_1ms
+000047 940e 00a2                 	call delay_1ms
+000049 940e 00a2                 	call delay_1ms
+00004b 940e 00a2                 	call delay_1ms
+00004d 940e 00a2                 	call delay_1ms
+00004f 940e 00a2                 	call delay_1ms
+000051 940e 00a2                 	call delay_1ms
+000053 940e 00a2                 	call delay_1ms
+000055 940e 00a2                 	call delay_1ms
+000057 940e 00a2                 	call delay_1ms
+000059 940e 00a2                 	call delay_1ms
+00005b 940e 00a2                 	call delay_1ms
+00005d 940e 00a2                 	call delay_1ms
+00005f 940e 00a2                 	call delay_1ms
+000061 940e 00a2                 	call delay_1ms
                                  	; ne tega ni noben vidu ssssssh
+                                 	; 15ms theoretically
+                                 
+                                 
+                                 	; okej apparently rabm H od func set poslt 2x so here it goes
+000063 940e 00ac                 	call func_set_H
+000065 940e 00a2                 	call delay_1ms
                                  
                                  	; function set command
-000063 e248
-000064 7f50
-000065 b11b
-000066 2b15
-000067 b91b
-000068 e008
-000069 b905
-00006a 940e 0092
-00006c e000
-00006d b905
-00006e 705f
-00006f b11b
-000070 2b15
-000071 b91b
-000072 e008
+000067 e240
+000068 2f54
+000069 7f50
+00006a b11b
+00006b 701f
+00006c 2b15
+00006d b91b
+00006e e008
+00006f b905
+000070 940e 00a2
+000072 e000
 000073 b905
-000074 940e 0092
-000076 e000
-000077 b905                      	send_lcd_4bits 0b0010_1000
-000078 940e 0092                 	call delay_1ms
+000074 2f54
+000075 705f
+000076 9552
+000077 b11b
+000078 701f
+000079 2b15
+00007a b91b
+00007b e008
+00007c b905
+00007d 940e 00a2
+00007f e000
+000080 b905                      	send_lcd_4bits 0b0010_0000
+000081 940e 00a2                 	call delay_1ms
+000083 940e 00a2                 	call delay_1ms
                                  
                                  	;display on/off command
-00007a e04f
-00007b 7f50
-00007c b11b
-00007d 2b15
-00007e b91b
-00007f e008
-000080 b905
-000081 940e 0092
-000083 e000
-000084 b905
-000085 705f
-000086 b11b
-000087 2b15
-000088 b91b
-000089 e008
-00008a b905
-00008b 940e 0092
-00008d e000
-00008e b905                      	send_lcd_4bits 0b0000_1111
-00008f 940e 0092                 	call delay_1ms
-000091 c00a                      	rjmp loop
+000085 e04f
+000086 2f54
+000087 7f50
+000088 b11b
+000089 701f
+00008a 2b15
+00008b b91b
+00008c e008
+00008d b905
+00008e 940e 00a2
+000090 e000
+000091 b905
+000092 2f54
+000093 705f
+000094 9552
+000095 b11b
+000096 701f
+000097 2b15
+000098 b91b
+000099 e008
+00009a b905
+00009b 940e 00a2
+00009d e000
+00009e b905                      	send_lcd_4bits 0b0000_1111
+00009f 940e 00a2                 	call delay_1ms
+0000a1 c017                      	rjmp loop
                                  
                                  delay_1ms:
-000092 e125                      	ldi  r18, 21
-000093 ec37                      	ldi  r19, 199
-000094 940e 0097                 	call L1
-000096 9508                      	ret
+0000a2 e125                      	ldi  r18, 21
+0000a3 ec37                      	ldi  r19, 199
+0000a4 940e 00a7                 	call L1
+0000a6 9508                      	ret
                                  
-000097 953a                      L1: dec  r19
-000098 f7f1                          brne L1
-000099 952a                          dec  r18
-00009a f7e1                          brne L1
-00009b 9508                      	ret
+0000a7 953a                      L1: dec  r19
+0000a8 f7f1                          brne L1
+0000a9 952a                          dec  r18
+0000aa f7e1                          brne L1
+0000ab 9508                      	ret
+                                 
+                                 func_set_H:
+0000ac e240                      	ldi	r20, 0b0010_0000	; naloži parameter (ukaz za lcd) v r20
+0000ad 2f54                      	mov r21, r20		; kopira r20 v r21
+0000ae 7f50                      	andi r21, 0b1111_0000	; po?isti L ukaza
+0000af b11b                      	in r17, PORTD		; naloži PORTD v r17
+0000b0 701f                      	andi r17, 0b0000_1111 ; po?isti zgornje bite
+0000b1 2b15                      	or r17, r21			; kombinira r17 in r21
+0000b2 b91b                      	out PORTD, r17		; nastavi PORTD na r17
+0000b3 e008
+0000b4 b905
+0000b5 940e 00a2
+0000b7 e000
+0000b8 b905                      	toggle_enable_pin
                                  
                                  loop:
 
@@ -1157,37 +1194,37 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  33 r17:  12 r18:   2 r19:   2 r20:   2 
-r21:   8 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
+r13:   0 r14:   0 r15:   0 r16:  37 r17:  20 r18:   2 r19:   2 r20:   8 
+r21:  17 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
 r29:   0 r30:   0 r31:   0 
 Registers used: 6 out of 35 (17.1%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
-andi  :   4 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+andi  :  10 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
 brne  :   2 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :  22 cbi   :   0 cbr   :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :  26 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
 cpi   :   0 cpse  :   0 dec   :   2 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   4 inc   :   0 jmp   :   0 
-ld    :   0 ldd   :   0 ldi   :  20 lds   :   0 lpm   :   0 lsl   :   0 
-lsr   :   0 mov   :   0 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   0 or    :   4 ori   :   0 out   :  21 pop   :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   5 inc   :   0 jmp   :   0 
+ld    :   0 ldd   :   0 ldi   :  23 lds   :   0 lpm   :   0 lsl   :   0 
+lsr   :   0 mov   :   5 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
+neg   :   0 nop   :   0 or    :   5 ori   :   0 out   :  24 pop   :   0 
 push  :   0 rcall :   0 ret   :   2 reti  :   0 rjmp  :   3 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
 sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   0 
-sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
-Instructions used: 10 out of 113 (8.8%)
+sub   :   0 subi  :   0 swap  :   2 tst   :   0 wdr   :   0 
+Instructions used: 12 out of 113 (10.6%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x00013a    212      0    212   32768   0.6%
+[.cseg] 0x000000 0x000174    270      0    270   32768   0.8%
 [.dseg] 0x000100 0x000100      0      0      0    2048   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

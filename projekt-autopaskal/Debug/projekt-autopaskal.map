@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\Lovro\Documents\Atmel Studio\7.0\projekt-autopaskal\projekt-autopaskal\main.asm Sat Nov 27 19:51:37 2021
+AVRASM ver. 2.2.8  C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm Tue Nov 30 21:52:20 2021
 
 
 EQU  SIGNATURE_000 0000001e
@@ -696,6 +696,7 @@ EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
 CSEG start        00000034
-CSEG delay_1ms    00000092
-CSEG loop         0000009c
-CSEG L1           00000097
+CSEG delay_1ms    000000a2
+CSEG func_set_H   000000ac
+CSEG loop         000000b9
+CSEG L1           000000a7
