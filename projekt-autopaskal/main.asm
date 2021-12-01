@@ -6,7 +6,7 @@
  */ 
 
  .cseg
-	.org 	0x00
+	.org 0x00
 	rjmp start
 	.org 0x034
 	.include "motor.inc"
