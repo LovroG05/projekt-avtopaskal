@@ -60,25 +60,73 @@ start:
 
 	; okej apparently rabm H od func set poslt 2x so here it goes
 	call func_set_H
+	; in pol rabm ?akat 4.1ms so 5ms
 	call delay_1ms
 	call delay_1ms
 	call delay_1ms
 	call delay_1ms
 	call delay_1ms
 
+	; in to je full function set
 	ldi r20, 0x28
 	call func_send
 	call delay_1ms
 	
+	; display on
 	ldi r20, 0b0000_1111
 	call func_send
 	call delay_1ms
 
+	; clear display
 	ldi r20, 0b0000_0001
 	call func_send
 	call delay_1ms
 
+	; entry mode set
 	ldi r20, 0b0000_0111
+	call func_send
+	call delay_1ms
+
+	; enables RS
+	call enable_PD3
+
+	ldi r20, 'h'
+	call func_send
+	call delay_1ms
+	ldi r20, 'e'
+	call func_send
+	call delay_1ms
+	ldi r20, 'l'
+	call func_send
+	call delay_1ms
+	ldi r20, 'l'
+	call func_send
+	call delay_1ms
+	ldi r20, 'o'
+	call func_send
+	call delay_1ms
+
+	call disable_PD3
+
+	ldi r20, 0b1100_0000
+	call func_send
+	call delay_1ms
+
+	call enable_PD3
+
+	ldi r20, 'w'
+	call func_send
+	call delay_1ms
+	ldi r20, 'o'
+	call func_send
+	call delay_1ms
+	ldi r20, 'r'
+	call func_send
+	call delay_1ms
+	ldi r20, 'l'
+	call func_send
+	call delay_1ms
+	ldi r20, 'd'
 	call func_send
 	call delay_1ms
 
@@ -94,6 +142,18 @@ L1: dec  r19
     brne L1
     dec  r18
     brne L1
+	ret
+
+enable_PD3:
+	in r17, PORTD
+	ori r17, 0b0000_1000 ; set PD3
+	out PORTD, r17
+	ret
+
+disable_PD3:
+	in r17, PORTD
+	andi r17, 0b1111_0111 ; set PD3
+	out PORTD, r17
 	ret
 
 toggle_enable_pin:

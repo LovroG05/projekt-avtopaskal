@@ -23,11 +23,13 @@
  </OUTPUT_FILES>
  <LABELS>
   <start><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>24</LINE></start>
-  <delay_1ms><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>87</LINE></delay_1ms>
-  <func_set_H><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>109</LINE></func_set_H>
-  <func_send><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>120</LINE></func_send>
-  <loop><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>139</LINE></loop>
-  <L1><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>93</LINE></L1>
-  <toggle_enable_pin><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>99</LINE></toggle_enable_pin>
+  <delay_1ms><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>135</LINE></delay_1ms>
+  <func_set_H><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>169</LINE></func_set_H>
+  <func_send><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>180</LINE></func_send>
+  <enable_PD3><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>147</LINE></enable_PD3>
+  <disable_PD3><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>153</LINE></disable_PD3>
+  <loop><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>199</LINE></loop>
+  <L1><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>141</LINE></L1>
+  <toggle_enable_pin><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>159</LINE></toggle_enable_pin>
  </LABELS>
 </ASSEMBLER_INFO>
