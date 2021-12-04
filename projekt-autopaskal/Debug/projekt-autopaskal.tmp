@@ -10,7 +10,6 @@
  <SOURCE_FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</SOURCE_FILE>
  <INCLUDED_FILES>
   <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc</FILE>
-  <FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\motor.inc</FILE>
  </INCLUDED_FILES>
  <OBJECT_FILES>
   <FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\Debug\projekt-autopaskal.obj</FILE>
@@ -23,10 +22,12 @@
   <FILE>projekt-autopaskal.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <start><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>14</LINE></start>
-  <delay_1ms><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>81</LINE></delay_1ms>
-  <func_set_H><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>93</LINE></func_set_H>
-  <loop><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>103</LINE></loop>
-  <L1><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>87</LINE></L1>
+  <start><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>24</LINE></start>
+  <delay_1ms><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>87</LINE></delay_1ms>
+  <func_set_H><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>109</LINE></func_set_H>
+  <func_send><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>120</LINE></func_send>
+  <loop><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>139</LINE></loop>
+  <L1><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>93</LINE></L1>
+  <toggle_enable_pin><FILE>C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>99</LINE></toggle_enable_pin>
  </LABELS>
 </ASSEMBLER_INFO>
