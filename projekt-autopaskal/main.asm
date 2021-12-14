@@ -8,13 +8,15 @@
  *	DISCLAIMER: ne vem kaj delam, commenti prolly niso accurate
  */ 
 
-/* E = PINB0
+/* 
+ E = PINB0
 
  RS = PIND3
  D4 = PIND4
  D5 = PIND5
  D5 = PIND6
- D7 = PIND7*/
+ D7 = PIND7
+*/
 
  .cseg
 	.org 0x00
@@ -39,24 +41,9 @@ start:
 	ldi	r16,(1<<PINB0)
     out DDRB,r16
 	;---------------------------------------------------
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	; ne tega ni noben vidu ssssssh
-	; 15ms theoretically
-
+	ldi r16, 16
+	call time_loop
+	; dobr zdej pa loh gledate to
 
 	; okej apparently rabm H od func set poslt 2x so here it goes
 	call func_set_H
@@ -131,6 +118,12 @@ start:
 	call delay_1ms
 
 	rjmp loop
+
+time_loop:
+	call delay_1ms
+	dec r16
+	brne time_loop
+	ret
 
 delay_1ms:
 	ldi  r18, 21
