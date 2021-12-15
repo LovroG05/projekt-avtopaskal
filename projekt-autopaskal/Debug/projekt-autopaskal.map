@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\Okno na moji desni\projekt-avtopaskal\projekt-autopaskal\main.asm Sat Dec 04 07:27:46 2021
+AVRASM ver. 2.2.8  C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm Tue Dec 14 19:30:07 2021
 
 
 EQU  SIGNATURE_000 0000001e
@@ -696,11 +696,12 @@ EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
 CSEG start        00000034
-CSEG delay_1ms    000000b8
-CSEG func_set_H   000000d2
-CSEG func_send    000000dc
-CSEG enable_PD3   000000c2
-CSEG disable_PD3  000000c6
-CSEG loop         000000ee
-CSEG L1           000000bd
-CSEG toggle_enable_pin 000000ca
+CSEG time_loop    0000009d
+CSEG func_set_H   000000bc
+CSEG delay_1ms    000000a2
+CSEG func_send    000000c6
+CSEG enable_PD3   000000ac
+CSEG disable_PD3  000000b0
+CSEG loop         000000d8
+CSEG L1           000000a7
+CSEG toggle_enable_pin 000000b4

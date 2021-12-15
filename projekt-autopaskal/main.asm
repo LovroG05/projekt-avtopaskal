@@ -8,13 +8,15 @@
  *	DISCLAIMER: ne vem kaj delam, commenti prolly niso accurate
  */ 
 
-/* E = PINB0
+/* 
+ E = PINB0
 
  RS = PIND3
  D4 = PIND4
  D5 = PIND5
  D5 = PIND6
- D7 = PIND7*/
+ D7 = PIND7
+*/
 
  .cseg
 	.org 0x00
@@ -59,23 +61,10 @@ start:
 	ori r17, 0b0000_0100
 	out PORTS, r17
 	;---------------------------------------------------
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	; ne tega ni noben vidu ssssssh
-	; 15ms theoretically
+
+	ldi r16, 16
+	call time_loop
+	; dobr zdej pa loh gledate to
 
 
 	; okej apparently rabm H od func set poslt 2x so here it goes
@@ -172,6 +161,12 @@ mainLoop:
 	
 	call delay_250ms ; 4fps
 	rjmp mainLoop
+
+time_loop:
+	call delay_1ms
+	dec r16
+	brne time_loop
+	ret
 
 delay_1ms:
 	ldi  r18, 21
