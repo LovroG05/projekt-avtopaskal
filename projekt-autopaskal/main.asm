@@ -19,6 +19,8 @@
  .cseg
 	.org 0x00
 	rjmp start
+	.org INT0addr
+	rjmp interrupt
 	.org 0x034
 
 start:
@@ -27,6 +29,15 @@ start:
 	out SPL, r16
 	ldi r16, high(RAMEND)
 	out SPH, r16
+	;---------------------------------------------------
+
+	;-----------INITIALIZE INT0 INTERRUPT---------------
+	ldi r16, (1<<ISC01)|(0<<ISC00)	
+	sts EICRA, r16
+	ldi r16, (1<<INT0)				
+	out EIMSK, r16
+
+	sei
 	;---------------------------------------------------
 
 	;-----------SET OUTPUT PINS-------------------------
@@ -38,6 +49,15 @@ start:
 	; PB0 - ENABLE display pin
 	ldi	r16,(1<<PINB0)
     out DDRB,r16
+	;---------------------------------------------------
+
+	;-----------SET INPUT PINS--------------------------
+	in r17, DDRD
+	andi r17, 0b1111_1011 ; set PD2 as INPUT
+	out DDRD, r17
+	in r17, PORTD
+	ori r17, 0b0000_0100
+	out PORTS, r17
 	;---------------------------------------------------
 	call delay_1ms
 	call delay_1ms
@@ -130,7 +150,28 @@ start:
 	call func_send
 	call delay_1ms
 
-	rjmp loop
+	rjmp mainLoop
+
+interrupt:
+	ldi r16, 0xFF
+	sts button_flag, r16
+	reti 
+
+button_happened:
+	;whatever
+	nop
+	;turn the flag off
+	ldi r16, 0x00
+	sts button_flag, r16
+	ret
+
+mainLoop:
+	lds r16, button_flag
+	cpi r16, 0xFF
+	breq button_happened
+	
+	call delay_250ms ; 4fps
+	rjmp mainLoop
 
 delay_1ms:
 	ldi  r18, 21
@@ -143,6 +184,22 @@ L1: dec  r19
     dec  r18
     brne L1
 	ret
+
+delay_250ms:
+	ldi  r18, 11
+    ldi  r19, 38
+    ldi  r20, 94
+	call L2
+	ret
+
+L2: dec  r20
+    brne L2
+    dec  r19
+    brne L2
+    dec  r18
+    brne L2
+    rjmp PC+1
+
 
 enable_PD3:
 	in r17, PORTD
@@ -198,3 +255,7 @@ func_send:
 
 loop:
 	rjmp loop
+
+.dseg
+button_flag: .byte 1
+last_button_flag: .byte 1
