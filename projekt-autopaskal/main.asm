@@ -34,8 +34,8 @@ start:
 	;---------------------------------------------------
 
 	;-----------SET OUTPUT PINS-------------------------
-	; set DDRD to OUTPUT GOD DAMMNIT
-	ser r16
+	; set DDRD to OUTPUT GOD DAMMNIT + PD2 IN
+	ldi r16, 0b1111_1011
     out DDRD,r16
 	
 
@@ -80,7 +80,14 @@ start:
 	rjmp gameLoop
 
 gameLoop:
-	
+	; TODO clear display
+	; set to line 2
+	sbic PIND, 2
+	; set to line 1 if bit 2 HIGH
+	; draw *
+
+	; draw obstacles
+
 
 	lds r16, wait_ms
 	call time_loop
