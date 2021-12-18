@@ -24,6 +24,8 @@
 	.org 0x034
 
 start:
+	ldi r16, 255
+	sts wait_ms, r16
 	;-----------INITIALIZE STACK POINTER----------------
 	ldi r16, low(RAMEND)
 	out SPL, r16
@@ -48,11 +50,8 @@ start:
 	; okej apparently rabm H od func set poslt 2x so here it goes
 	call func_set_H
 	; in pol rabm ?akat 4.1ms so 5ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
-	call delay_1ms
+	ldi r16, 6
+	call time_loop
 
 	; in to je full function set
 	ldi r20, 0x28
@@ -77,47 +76,19 @@ start:
 	; enables RS
 	call enable_PD3
 
-	ldi r20, 'h'
-	call func_send
-	call delay_1ms
-	ldi r20, 'e'
-	call func_send
-	call delay_1ms
-	ldi r20, 'l'
-	call func_send
-	call delay_1ms
-	ldi r20, 'l'
-	call func_send
-	call delay_1ms
-	ldi r20, 'o'
-	call func_send
-	call delay_1ms
+	
+	rjmp gameLoop
 
-	call disable_PD3
+gameLoop:
+	
 
-	ldi r20, 0b1100_0000
-	call func_send
-	call delay_1ms
-
-	call enable_PD3
-
-	ldi r20, 'w'
-	call func_send
-	call delay_1ms
-	ldi r20, 'o'
-	call func_send
-	call delay_1ms
-	ldi r20, 'r'
-	call func_send
-	call delay_1ms
-	ldi r20, 'l'
-	call func_send
-	call delay_1ms
-	ldi r20, 'd'
-	call func_send
-	call delay_1ms
-
-	rjmp loop
+	lds r16, wait_ms
+	call time_loop
+	lds r16, wait_ms
+	dec r16
+	sts wait_ms, r16 ; TODO nared da ni usak cikeLJ
+	rjmp gameLoop
+	rjmp end_loop
 
 time_loop:
 	call delay_1ms
@@ -189,5 +160,19 @@ func_send:
 	call toggle_enable_pin
 	ret
 
-loop:
-	rjmp loop
+end_loop:
+	rjmp end_loop
+
+
+.dseg
+
+line1: .byte 2
+line1pointer: .byte 1
+
+line2: .byte 2
+line2pointer: .byte 1
+
+wait_ms: .byte 1
+
+line1carry: .byte 1
+line2carry: .byte 1
