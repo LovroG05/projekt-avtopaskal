@@ -76,26 +76,209 @@ start:
 	; enables RS
 	call enable_PD3
 
+	; load game level
+	ldi r16, 0b0011_0001
+	ldi r16, 0b0000_0100
+	ldi r16, 0b1000_0100
+	ldi r16, 0b0011_0001
+	sts line1H, r16
+	sts line2H, r16
+
+	sts line1L, r16
+	sts line2L, r16
+
 	
 	rjmp gameLoop
 
+increaseFPS:
+	lds r17, wait_ms
+	dec r17
+	sts wait_ms, r17
+	clr r17
+	sts fourLoopCounter, r17
+	ret
+
+increaseFourLoopCounter:
+	lds r17, fourLoopCounter
+	inc r17
+	sts fourLoopCounter, r17
+	ret
+
+doSpeed:
+	lds r16, fourLoopCounter
+	cpi r16, 4
+	breq increaseFPS
+	cpi r16, 4
+	brne increaseFourLoopCounter
+	ret
+
+doLine1:
+	lds r16, line1H
+	andi r22, 0b1000_0000
+	cpi r22, 0b1000_0000
+	breq writeBlock
+
+	andi r22, 0b0100_0000
+	cpi r22, 0b0100_0000
+	breq writeBlock
+
+	andi r22, 0b0010_0000
+	cpi r22, 0b0010_0000
+	breq writeBlock
+
+	andi r22, 0b0001_0000
+	cpi r22, 0b0001_0000
+	breq writeBlock
+
+	andi r22, 0b0000_1000
+	cpi r22, 0b0000_1000
+	breq writeBlock
+
+	andi r22, 0b0000_0100
+	cpi r22, 0b0000_0100
+	breq writeBlock
+
+	andi r22, 0b0000_0010
+	cpi r22, 0b0000_0010
+	breq writeBlock
+
+	andi r22, 0b0000_0001
+	cpi r22, 0b0000_0001
+	breq writeBlock
+
+	lds r16, line1L
+	andi r22, 0b1000_0000
+	cpi r22, 0b1000_0000
+	breq writeBlock
+
+	andi r22, 0b0100_0000
+	cpi r22, 0b0100_0000
+	breq writeBlock
+
+	andi r22, 0b0010_0000
+	cpi r22, 0b0010_0000
+	breq writeBlock
+
+	andi r22, 0b0001_0000
+	cpi r22, 0b0001_0000
+	breq writeBlock
+
+	andi r22, 0b0000_1000
+	cpi r22, 0b0000_1000
+	breq writeBlock
+
+	andi r22, 0b0000_0100
+	cpi r22, 0b0000_0100
+	breq writeBlock
+
+	andi r22, 0b0000_0010
+	cpi r22, 0b0000_0010
+	breq writeBlock
+
+	andi r22, 0b0000_0001
+	cpi r22, 0b0000_0001
+	breq writeBlock
+	
+	ret
+
+writeBlock:
+	ldi r20, '?'
+	call func_send
+	call delay_1ms
+	ret
+
+doLine2:
+	lds r16, line2H
+	andi r22, 0b1000_0000
+	cpi r22, 0b1000_0000
+	breq writeBlock
+
+	andi r22, 0b0100_0000
+	cpi r22, 0b0100_0000
+	breq writeBlock
+
+	andi r22, 0b0010_0000
+	cpi r22, 0b0010_0000
+	breq writeBlock
+
+	andi r22, 0b0001_0000
+	cpi r22, 0b0001_0000
+	breq writeBlock
+
+	andi r22, 0b0000_1000
+	cpi r22, 0b0000_1000
+	breq writeBlock
+
+	andi r22, 0b0000_0100
+	cpi r22, 0b0000_0100
+	breq writeBlock
+
+	andi r22, 0b0000_0010
+	cpi r22, 0b0000_0010
+	breq writeBlock
+
+	andi r22, 0b0000_0001
+	cpi r22, 0b0000_0001
+	breq writeBlock
+
+	lds r16, line2L
+	andi r22, 0b1000_0000
+	cpi r22, 0b1000_0000
+	breq writeBlock
+
+	andi r22, 0b0100_0000
+	cpi r22, 0b0100_0000
+	breq writeBlock
+
+	andi r22, 0b0010_0000
+	cpi r22, 0b0010_0000
+	breq writeBlock
+
+	andi r22, 0b0001_0000
+	cpi r22, 0b0001_0000
+	breq writeBlock
+
+	andi r22, 0b0000_1000
+	cpi r22, 0b0000_1000
+	breq writeBlock
+
+	andi r22, 0b0000_0100
+	cpi r22, 0b0000_0100
+	breq writeBlock
+
+	andi r22, 0b0000_0010
+	cpi r22, 0b0000_0010
+	breq writeBlock
+
+	andi r22, 0b0000_0001
+	cpi r22, 0b0000_0001
+	breq writeBlock
+
+	ret
+
 gameLoop:
-	; TODO clear display
-	; set to line 2
-	sbic PIND, 2
-	; set to line 1 if bit 2 HIGH
-	; draw *
+	; clear display
+	ldi r20, 0b0000_0001
+	call func_send
+	call delay_1ms
 
-	; draw obstacles
+	call doLine1
 
+	call disable_PD3
+
+	ldi r20, 0b1100_0000
+	call func_send
+	call delay_1ms
+
+	call enable_PD3
+
+	call doLine2
 
 	lds r16, wait_ms
 	call time_loop
-	lds r16, wait_ms
-	dec r16
-	sts wait_ms, r16 ; TODO nared da ni usak cikeLJ
+	call doSpeed
 	rjmp gameLoop
-	rjmp end_loop
+	;rjmp end_loop
 
 time_loop:
 	call delay_1ms
@@ -173,13 +356,14 @@ end_loop:
 
 .dseg
 
-line1: .byte 2
-line1pointer: .byte 1
+line1H: .byte 1
+line1L: .byte 1
 
-line2: .byte 2
-line2pointer: .byte 1
+line2H: .byte 1
+line2L: .byte 1
 
 wait_ms: .byte 1
+fourLoopCounter: .byte 1
 
 line1carry: .byte 1
 line2carry: .byte 1
