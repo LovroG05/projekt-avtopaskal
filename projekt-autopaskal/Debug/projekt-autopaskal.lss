@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm Tue Dec 14 19:30:07 2021
+AVRASM ver. 2.2.8  C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm Mon Dec 20 21:07:10 2021
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
@@ -1010,174 +1010,348 @@ AVRASM ver. 2.2.8  C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm
                                  	.org 0x034
                                  
                                  start:
+000034 ef0f                      	ldi r16, 255
+000035 9300 0104                 	sts wait_ms, r16
                                  	;-----------INITIALIZE STACK POINTER----------------
-000034 ef0f                      	ldi r16, low(RAMEND)
-000035 bf0d                      	out SPL, r16
-000036 e008                      	ldi r16, high(RAMEND)
-000037 bf0e                      	out SPH, r16
+000037 ef0f                      	ldi r16, low(RAMEND)
+000038 bf0d                      	out SPL, r16
+000039 e008                      	ldi r16, high(RAMEND)
+00003a bf0e                      	out SPH, r16
                                  	;---------------------------------------------------
                                  
                                  	;-----------SET OUTPUT PINS-------------------------
-                                 	; set DDRD to OUTPUT GOD DAMMNIT
-000038 ef0f                      	ser r16
-000039 b90a                          out DDRD,r16
+                                 	; set DDRD to OUTPUT GOD DAMMNIT + PD2 IN
+00003b ef0b                      	ldi r16, 0b1111_1011
+00003c b90a                          out DDRD,r16
                                  	
                                  
                                  	; PB0 - ENABLE display pin
-00003a e001                      	ldi	r16,(1<<PINB0)
-00003b b904                          out DDRB,r16
+00003d e001                      	ldi	r16,(1<<PINB0)
+00003e b904                          out DDRB,r16
                                  	;---------------------------------------------------
-00003c e100                      	ldi r16, 16
-00003d 940e 009d                 	call time_loop
-                                 	; ne tega ni noben vidu ssssssh
-                                 	; 15ms theoretically
-                                 
+00003f e100                      	ldi r16, 16
+000040 940e 0109                 	call time_loop
+                                 	; dobr zdej pa loh gledate to
                                  
                                  	; okej apparently rabm H od func set poslt 2x so here it goes
-00003f 940e 00bc                 	call func_set_H
+000042 940e 0128                 	call func_set_H
                                  	; in pol rabm ?akat 4.1ms so 5ms
-000041 940e 00a2                 	call delay_1ms
-000043 940e 00a2                 	call delay_1ms
-000045 940e 00a2                 	call delay_1ms
-000047 940e 00a2                 	call delay_1ms
-000049 940e 00a2                 	call delay_1ms
+000044 e006                      	ldi r16, 6
+000045 940e 0109                 	call time_loop
                                  
                                  	; in to je full function set
-00004b e248                      	ldi r20, 0x28
-00004c 940e 00c6                 	call func_send
-00004e 940e 00a2                 	call delay_1ms
+000047 e248                      	ldi r20, 0x28
+000048 940e 0132                 	call func_send
+00004a 940e 010e                 	call delay_1ms
                                  	
                                  	; display on
-000050 e04f                      	ldi r20, 0b0000_1111
-000051 940e 00c6                 	call func_send
-000053 940e 00a2                 	call delay_1ms
+00004c e04f                      	ldi r20, 0b0000_1111
+00004d 940e 0132                 	call func_send
+00004f 940e 010e                 	call delay_1ms
                                  
                                  	; clear display
-000055 e041                      	ldi r20, 0b0000_0001
-000056 940e 00c6                 	call func_send
-000058 940e 00a2                 	call delay_1ms
+000051 e041                      	ldi r20, 0b0000_0001
+000052 940e 0132                 	call func_send
+000054 940e 010e                 	call delay_1ms
                                  
                                  	; entry mode set
-00005a e047                      	ldi r20, 0b0000_0111
-00005b 940e 00c6                 	call func_send
-00005d 940e 00a2                 	call delay_1ms
+000056 e047                      	ldi r20, 0b0000_0111
+000057 940e 0132                 	call func_send
+000059 940e 010e                 	call delay_1ms
                                  
                                  	; enables RS
-00005f 940e 00ac                 	call enable_PD3
+00005b 940e 0118                 	call enable_PD3
                                  
-000061 e648                      	ldi r20, 'h'
-000062 940e 00c6                 	call func_send
-000064 940e 00a2                 	call delay_1ms
-000066 e645                      	ldi r20, 'e'
-000067 940e 00c6                 	call func_send
-000069 940e 00a2                 	call delay_1ms
-00006b e64c                      	ldi r20, 'l'
-00006c 940e 00c6                 	call func_send
-00006e 940e 00a2                 	call delay_1ms
-000070 e64c                      	ldi r20, 'l'
-000071 940e 00c6                 	call func_send
-000073 940e 00a2                 	call delay_1ms
-000075 e64f                      	ldi r20, 'o'
-000076 940e 00c6                 	call func_send
-000078 940e 00a2                 	call delay_1ms
+                                 	; load game level
+00005d e301                      	ldi r16, 0b0011_0001
+00005e e004                      	ldi r16, 0b0000_0100
+00005f e804                      	ldi r16, 0b1000_0100
+000060 e301                      	ldi r16, 0b0011_0001
+000061 9300 0100                 	sts line1H, r16
+000063 9300 0102                 	sts line2H, r16
                                  
-00007a 940e 00b0                 	call disable_PD3
+000065 9300 0101                 	sts line1L, r16
+000067 9300 0103                 	sts line2L, r16
                                  
-00007c ec40                      	ldi r20, 0b1100_0000
-00007d 940e 00c6                 	call func_send
-00007f 940e 00a2                 	call delay_1ms
+                                 	
+000069 c086                      	rjmp gameLoop
                                  
-000081 940e 00ac                 	call enable_PD3
+                                 increaseFPS:
+00006a 9110 0104                 	lds r17, wait_ms
+00006c 951a                      	dec r17
+00006d 9310 0104                 	sts wait_ms, r17
+00006f 2711                      	clr r17
+000070 9310 0105                 	sts fourLoopCounter, r17
+000072 9508                      	ret
                                  
-000083 e747                      	ldi r20, 'w'
-000084 940e 00c6                 	call func_send
-000086 940e 00a2                 	call delay_1ms
-000088 e64f                      	ldi r20, 'o'
-000089 940e 00c6                 	call func_send
-00008b 940e 00a2                 	call delay_1ms
-00008d e742                      	ldi r20, 'r'
-00008e 940e 00c6                 	call func_send
-000090 940e 00a2                 	call delay_1ms
-000092 e64c                      	ldi r20, 'l'
-000093 940e 00c6                 	call func_send
-000095 940e 00a2                 	call delay_1ms
-000097 e644                      	ldi r20, 'd'
-000098 940e 00c6                 	call func_send
-00009a 940e 00a2                 	call delay_1ms
+                                 increaseFourLoopCounter:
+000073 9110 0105                 	lds r17, fourLoopCounter
+000075 9513                      	inc r17
+000076 9310 0105                 	sts fourLoopCounter, r17
+000078 9508                      	ret
                                  
-00009c c03b                      	rjmp loop
+                                 doSpeed:
+000079 9100 0105                 	lds r16, fourLoopCounter
+00007b 3004                      	cpi r16, 4
+00007c f369                      	breq increaseFPS
+00007d 3004                      	cpi r16, 4
+00007e f7a1                      	brne increaseFourLoopCounter
+00007f 9508                      	ret
+                                 
+                                 doLine1:
+000080 9100 0100                 	lds r16, line1H
+000082 7860                      	andi r22, 0b1000_0000
+000083 3860                      	cpi r22, 0b1000_0000
+000084 f181                      	breq writeBlock
+                                 
+000085 7460                      	andi r22, 0b0100_0000
+000086 3460                      	cpi r22, 0b0100_0000
+000087 f169                      	breq writeBlock
+                                 
+000088 7260                      	andi r22, 0b0010_0000
+000089 3260                      	cpi r22, 0b0010_0000
+00008a f151                      	breq writeBlock
+                                 
+00008b 7160                      	andi r22, 0b0001_0000
+00008c 3160                      	cpi r22, 0b0001_0000
+00008d f139                      	breq writeBlock
+                                 
+00008e 7068                      	andi r22, 0b0000_1000
+00008f 3068                      	cpi r22, 0b0000_1000
+000090 f121                      	breq writeBlock
+                                 
+000091 7064                      	andi r22, 0b0000_0100
+000092 3064                      	cpi r22, 0b0000_0100
+000093 f109                      	breq writeBlock
+                                 
+000094 7062                      	andi r22, 0b0000_0010
+000095 3062                      	cpi r22, 0b0000_0010
+000096 f0f1                      	breq writeBlock
+                                 
+000097 7061                      	andi r22, 0b0000_0001
+000098 3061                      	cpi r22, 0b0000_0001
+000099 f0d9                      	breq writeBlock
+                                 
+00009a 9100 0101                 	lds r16, line1L
+00009c 7860                      	andi r22, 0b1000_0000
+00009d 3860                      	cpi r22, 0b1000_0000
+00009e f0b1                      	breq writeBlock
+                                 
+00009f 7460                      	andi r22, 0b0100_0000
+0000a0 3460                      	cpi r22, 0b0100_0000
+0000a1 f099                      	breq writeBlock
+                                 
+0000a2 7260                      	andi r22, 0b0010_0000
+0000a3 3260                      	cpi r22, 0b0010_0000
+0000a4 f081                      	breq writeBlock
+                                 
+0000a5 7160                      	andi r22, 0b0001_0000
+0000a6 3160                      	cpi r22, 0b0001_0000
+0000a7 f069                      	breq writeBlock
+                                 
+0000a8 7068                      	andi r22, 0b0000_1000
+0000a9 3068                      	cpi r22, 0b0000_1000
+0000aa f051                      	breq writeBlock
+                                 
+0000ab 7064                      	andi r22, 0b0000_0100
+0000ac 3064                      	cpi r22, 0b0000_0100
+0000ad f039                      	breq writeBlock
+                                 
+0000ae 7062                      	andi r22, 0b0000_0010
+0000af 3062                      	cpi r22, 0b0000_0010
+0000b0 f021                      	breq writeBlock
+                                 
+0000b1 7061                      	andi r22, 0b0000_0001
+0000b2 3061                      	cpi r22, 0b0000_0001
+0000b3 f009                      	breq writeBlock
+                                 	
+0000b4 9508                      	ret
+                                 
+                                 writeBlock:
+0000b5 e34f                      	ldi r20, '?'
+0000b6 940e 0132                 	call func_send
+0000b8 940e 010e                 	call delay_1ms
+0000ba 9508                      	ret
+                                 
+                                 doLine2:
+0000bb 9100 0102                 	lds r16, line2H
+0000bd 7860                      	andi r22, 0b1000_0000
+0000be 3860                      	cpi r22, 0b1000_0000
+0000bf f3a9                      	breq writeBlock
+                                 
+0000c0 7460                      	andi r22, 0b0100_0000
+0000c1 3460                      	cpi r22, 0b0100_0000
+0000c2 f391                      	breq writeBlock
+                                 
+0000c3 7260                      	andi r22, 0b0010_0000
+0000c4 3260                      	cpi r22, 0b0010_0000
+0000c5 f379                      	breq writeBlock
+                                 
+0000c6 7160                      	andi r22, 0b0001_0000
+0000c7 3160                      	cpi r22, 0b0001_0000
+0000c8 f361                      	breq writeBlock
+                                 
+0000c9 7068                      	andi r22, 0b0000_1000
+0000ca 3068                      	cpi r22, 0b0000_1000
+0000cb f349                      	breq writeBlock
+                                 
+0000cc 7064                      	andi r22, 0b0000_0100
+0000cd 3064                      	cpi r22, 0b0000_0100
+0000ce f331                      	breq writeBlock
+                                 
+0000cf 7062                      	andi r22, 0b0000_0010
+0000d0 3062                      	cpi r22, 0b0000_0010
+0000d1 f319                      	breq writeBlock
+                                 
+0000d2 7061                      	andi r22, 0b0000_0001
+0000d3 3061                      	cpi r22, 0b0000_0001
+0000d4 f301                      	breq writeBlock
+                                 
+0000d5 9100 0103                 	lds r16, line2L
+0000d7 7860                      	andi r22, 0b1000_0000
+0000d8 3860                      	cpi r22, 0b1000_0000
+0000d9 f2d9                      	breq writeBlock
+                                 
+0000da 7460                      	andi r22, 0b0100_0000
+0000db 3460                      	cpi r22, 0b0100_0000
+0000dc f2c1                      	breq writeBlock
+                                 
+0000dd 7260                      	andi r22, 0b0010_0000
+0000de 3260                      	cpi r22, 0b0010_0000
+0000df f2a9                      	breq writeBlock
+                                 
+0000e0 7160                      	andi r22, 0b0001_0000
+0000e1 3160                      	cpi r22, 0b0001_0000
+0000e2 f291                      	breq writeBlock
+                                 
+0000e3 7068                      	andi r22, 0b0000_1000
+0000e4 3068                      	cpi r22, 0b0000_1000
+0000e5 f279                      	breq writeBlock
+                                 
+0000e6 7064                      	andi r22, 0b0000_0100
+0000e7 3064                      	cpi r22, 0b0000_0100
+0000e8 f261                      	breq writeBlock
+                                 
+0000e9 7062                      	andi r22, 0b0000_0010
+0000ea 3062                      	cpi r22, 0b0000_0010
+0000eb f249                      	breq writeBlock
+                                 
+0000ec 7061                      	andi r22, 0b0000_0001
+0000ed 3061                      	cpi r22, 0b0000_0001
+0000ee f231                      	breq writeBlock
+                                 
+0000ef 9508                      	ret
+                                 
+                                 gameLoop:
+                                 	; clear display
+0000f0 e041                      	ldi r20, 0b0000_0001
+0000f1 940e 0132                 	call func_send
+0000f3 940e 010e                 	call delay_1ms
+                                 
+0000f5 940e 0080                 	call doLine1
+                                 
+0000f7 940e 011c                 	call disable_PD3
+                                 
+0000f9 ec40                      	ldi r20, 0b1100_0000
+0000fa 940e 0132                 	call func_send
+0000fc 940e 010e                 	call delay_1ms
+                                 
+0000fe 940e 0118                 	call enable_PD3
+                                 
+000100 940e 00bb                 	call doLine2
+                                 
+000102 9100 0104                 	lds r16, wait_ms
+000104 940e 0109                 	call time_loop
+000106 940e 0079                 	call doSpeed
+000108 cfe7                      	rjmp gameLoop
+                                 	;rjmp end_loop
                                  
                                  time_loop:
-00009d 940e 00a2                 	call delay_1ms
-00009f 950a                      	dec r16
-0000a0 f7e1                      	brne time_loop
-0000a1 9508                      	ret
+000109 940e 010e                 	call delay_1ms
+00010b 950a                      	dec r16
+00010c f7e1                      	brne time_loop
+00010d 9508                      	ret
                                  
                                  delay_1ms:
-0000a2 e125                      	ldi  r18, 21
-0000a3 ec37                      	ldi  r19, 199
-0000a4 940e 00a7                 	call L1
-0000a6 9508                      	ret
+00010e e125                      	ldi  r18, 21
+00010f ec37                      	ldi  r19, 199
+000110 940e 0113                 	call L1
+000112 9508                      	ret
                                  
-0000a7 953a                      L1: dec  r19
-0000a8 f7f1                          brne L1
-0000a9 952a                          dec  r18
-0000aa f7e1                          brne L1
-0000ab 9508                      	ret
+000113 953a                      L1: dec  r19
+000114 f7f1                          brne L1
+000115 952a                          dec  r18
+000116 f7e1                          brne L1
+000117 9508                      	ret
                                  
                                  enable_PD3:
-0000ac b11b                      	in r17, PORTD
-0000ad 6018                      	ori r17, 0b0000_1000 ; set PD3
-0000ae b91b                      	out PORTD, r17
-0000af 9508                      	ret
+000118 b11b                      	in r17, PORTD
+000119 6018                      	ori r17, 0b0000_1000 ; set PD3
+00011a b91b                      	out PORTD, r17
+00011b 9508                      	ret
                                  
                                  disable_PD3:
-0000b0 b11b                      	in r17, PORTD
-0000b1 7f17                      	andi r17, 0b1111_0111 ; set PD3
-0000b2 b91b                      	out PORTD, r17
-0000b3 9508                      	ret
+00011c b11b                      	in r17, PORTD
+00011d 7f17                      	andi r17, 0b1111_0111 ; set PD3
+00011e b91b                      	out PORTD, r17
+00011f 9508                      	ret
                                  
                                  toggle_enable_pin:
-0000b4 e001                      	ldi r16,(1<<PINB0)
-0000b5 b905                      	out PORTB, r16
-0000b6 0000                      	nop
-0000b7 0000                      	nop
-0000b8 0000                      	nop
-0000b9 e000                      	ldi r16,(0<<PINB0)
-0000ba b905                      	out PORTB, r16
-0000bb 9508                      	ret
+000120 e001                      	ldi r16,(1<<PINB0)
+000121 b905                      	out PORTB, r16
+000122 0000                      	nop
+000123 0000                      	nop
+000124 0000                      	nop
+000125 e000                      	ldi r16,(0<<PINB0)
+000126 b905                      	out PORTB, r16
+000127 9508                      	ret
                                  
                                  func_set_H:
-0000bc e240                      	ldi	r20, 0b0010_0000	; naloži parameter (ukaz za lcd) v r20
-0000bd 2f54                      	mov r21, r20		; kopira r20 v r21
-0000be 7f50                      	andi r21, 0b1111_0000	; po?isti L ukaza
-0000bf b11b                      	in r17, PORTD		; naloži PORTD v r17
-0000c0 701f                      	andi r17, 0b0000_1111 ; po?isti zgornje bite
-0000c1 2b15                      	or r17, r21			; kombinira r17 in r21
-0000c2 b91b                      	out PORTD, r17		; nastavi PORTD na r17
-0000c3 940e 00b4                 	call toggle_enable_pin
-0000c5 9508                      	ret
+000128 e240                      	ldi	r20, 0b0010_0000	; naloži parameter (ukaz za lcd) v r20
+000129 2f54                      	mov r21, r20		; kopira r20 v r21
+00012a 7f50                      	andi r21, 0b1111_0000	; po?isti L ukaza
+00012b b11b                      	in r17, PORTD		; naloži PORTD v r17
+00012c 701f                      	andi r17, 0b0000_1111 ; po?isti zgornje bite
+00012d 2b15                      	or r17, r21			; kombinira r17 in r21
+00012e b91b                      	out PORTD, r17		; nastavi PORTD na r17
+00012f 940e 0120                 	call toggle_enable_pin
+000131 9508                      	ret
                                  
                                  func_send:
-0000c6 2f54                      	mov r21, r20
-0000c7 7f50                      	andi r21, 0b1111_0000
-0000c8 b11b                      	in r17, PORTD
-0000c9 701f                      	andi r17, 0b0000_1111
-0000ca 2b15                      	or r17, r21
-0000cb b91b                      	out PORTD, r17
-0000cc 940e 00b4                 	call toggle_enable_pin
+000132 2f54                      	mov r21, r20
+000133 7f50                      	andi r21, 0b1111_0000
+000134 b11b                      	in r17, PORTD
+000135 701f                      	andi r17, 0b0000_1111
+000136 2b15                      	or r17, r21
+000137 b91b                      	out PORTD, r17
+000138 940e 0120                 	call toggle_enable_pin
                                  
-0000ce 2f54                      	mov r21, r20
-0000cf 9552                      	swap r21
-0000d0 7f50                      	andi r21, 0b1111_0000
-0000d1 b11b                      	in r17, PORTD
-0000d2 701f                      	andi r17, 0b0000_1111
-0000d3 2b15                      	or r17, r21
-0000d4 b91b                      	out PORTD, r17
-0000d5 940e 00b4                 	call toggle_enable_pin
-0000d7 9508                      	ret
+00013a 2f54                      	mov r21, r20
+00013b 9552                      	swap r21
+00013c 7f50                      	andi r21, 0b1111_0000
+00013d b11b                      	in r17, PORTD
+00013e 701f                      	andi r17, 0b0000_1111
+00013f 2b15                      	or r17, r21
+000140 b91b                      	out PORTD, r17
+000141 940e 0120                 	call toggle_enable_pin
+000143 9508                      	ret
                                  
-                                 loop:
+                                 end_loop:
+000144 cfff                      	rjmp end_loop
+                                 
+                                 
+                                 .dseg
+                                 
+000100                           line1H: .byte 1
+000101                           line1L: .byte 1
+                                 
+000102                           line2H: .byte 1
+000103                           line2L: .byte 1
+                                 
+000104                           wait_ms: .byte 1
+000105                           fourLoopCounter: .byte 1
+                                 
+000106                           line1carry: .byte 1
 
 
 RESOURCE USE INFORMATION
@@ -1197,38 +1371,38 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  14 r17:  18 r18:   2 r19:   2 r20:  19 
-r21:  10 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
+r13:   0 r14:   0 r15:   0 r16:  33 r17:  26 r18:   2 r19:   2 r20:  11 
+r21:  10 r22:  64 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
 r29:   0 r30:   0 r31:   0 
-Registers used: 6 out of 35 (17.1%)
+Registers used: 7 out of 35 (20.0%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
-andi  :   7 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
+andi  :  39 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :  33 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   3 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :  45 cbi   :   0 cbr   :   0 
-clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
+brne  :   4 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :  29 cbi   :   0 cbr   :   0 
+clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   1 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   0 cpse  :   0 dec   :   3 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   5 inc   :   0 jmp   :   0 
-ld    :   0 ldd   :   0 ldi   :  24 lds   :   0 lpm   :   0 lsl   :   0 
+cpi   :  34 cpse  :   0 dec   :   4 eor   :   0 fmul  :   0 fmuls :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   5 inc   :   1 jmp   :   0 
+ld    :   0 ldd   :   0 ldi   :  23 lds   :   8 lpm   :   0 lsl   :   0 
 lsr   :   0 mov   :   3 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
 neg   :   0 nop   :   3 or    :   3 ori   :   1 out   :  11 pop   :   0 
-push  :   0 rcall :   0 ret   :   8 reti  :   0 rjmp  :   3 rol   :   0 
+push  :   0 rcall :   0 ret   :  14 reti  :   0 rjmp  :   4 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
-sei   :   0 sen   :   0 ser   :   1 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   0 
+sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
+sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   8 
 sub   :   0 subi  :   0 swap  :   1 tst   :   0 wdr   :   0 
-Instructions used: 15 out of 113 (13.3%)
+Instructions used: 20 out of 113 (17.7%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0001b2    332      0    332   32768   1.0%
-[.dseg] 0x000100 0x000100      0      0      0    2048   0.0%
+[.cseg] 0x000000 0x00028a    548      0    548   32768   1.7%
+[.dseg] 0x000100 0x000108      0      8      8    2048   0.4%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
 Assembly complete, 0 errors, 0 warnings
