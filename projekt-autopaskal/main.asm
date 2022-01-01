@@ -92,28 +92,27 @@ start:
 
 gameLoop:
 	; clear display
-	ldi r20, 0b0000_0001
-	call func_send
-	call delay_1ms
+	ldi r20, 0b0000_0001 ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
 
 	; goto line 2
-	call disable_PD3
-	ldi r20, 0b1100_0000
-	call func_send
-	call delay_1ms
-	call enable_PD3
+	call disable_PD3 ; 7
+	ldi r20, 0b1100_0000 ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+	call enable_PD3 ; 7
 
-	lds r16, wait_ms
-	call time_loop
-	call doSpeed
-	rjmp gameLoop
+	ldi r16, 500 ; oz kukrkol bo ostal do 1s
+	call time_loop ; 2 + 16 009 * r16
+	rjmp gameLoop ; 2
 	;rjmp end_loop
 
-time_loop:
-	call delay_1ms
-	dec r16
-	brne time_loop
-	ret
+time_loop: ; 16 009 * r16
+	call delay_1ms ; 16 004
+	dec r16 ; 1
+	brne time_loop ; 2
+	ret ; 2
 
 delay_1ms:
 	ldi  r18, 21
