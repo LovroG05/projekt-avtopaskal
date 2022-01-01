@@ -90,189 +90,18 @@ start:
 	
 	rjmp gameLoop
 
-increaseFPS:
-	lds r17, wait_ms
-	dec r17
-	sts wait_ms, r17
-	clr r17
-	sts fourLoopCounter, r17
-	ret
-
-increaseFourLoopCounter:
-	lds r17, fourLoopCounter
-	inc r17
-	sts fourLoopCounter, r17
-	ret
-
-doSpeed:
-	lds r16, fourLoopCounter
-	cpi r16, 4
-	breq increaseFPS
-	cpi r16, 4
-	brne increaseFourLoopCounter
-	ret
-
-doLine1:
-	lds r16, line1H
-	andi r22, 0b1000_0000
-	cpi r22, 0b1000_0000
-	breq writeBlock
-
-	andi r22, 0b0100_0000
-	cpi r22, 0b0100_0000
-	breq writeBlock
-
-	andi r22, 0b0010_0000
-	cpi r22, 0b0010_0000
-	breq writeBlock
-
-	andi r22, 0b0001_0000
-	cpi r22, 0b0001_0000
-	breq writeBlock
-
-	andi r22, 0b0000_1000
-	cpi r22, 0b0000_1000
-	breq writeBlock
-
-	andi r22, 0b0000_0100
-	cpi r22, 0b0000_0100
-	breq writeBlock
-
-	andi r22, 0b0000_0010
-	cpi r22, 0b0000_0010
-	breq writeBlock
-
-	andi r22, 0b0000_0001
-	cpi r22, 0b0000_0001
-	breq writeBlock
-
-	lds r16, line1L
-	andi r22, 0b1000_0000
-	cpi r22, 0b1000_0000
-	breq writeBlock
-
-	andi r22, 0b0100_0000
-	cpi r22, 0b0100_0000
-	breq writeBlock
-
-	andi r22, 0b0010_0000
-	cpi r22, 0b0010_0000
-	breq writeBlock
-
-	andi r22, 0b0001_0000
-	cpi r22, 0b0001_0000
-	breq writeBlock
-
-	andi r22, 0b0000_1000
-	cpi r22, 0b0000_1000
-	breq writeBlock
-
-	andi r22, 0b0000_0100
-	cpi r22, 0b0000_0100
-	breq writeBlock
-
-	andi r22, 0b0000_0010
-	cpi r22, 0b0000_0010
-	breq writeBlock
-
-	andi r22, 0b0000_0001
-	cpi r22, 0b0000_0001
-	breq writeBlock
-	
-	ret
-
-writeBlock:
-	ldi r20, '?'
-	call func_send
-	call delay_1ms
-	ret
-
-doLine2:
-	lds r16, line2H
-	andi r22, 0b1000_0000
-	cpi r22, 0b1000_0000
-	breq writeBlock
-
-	andi r22, 0b0100_0000
-	cpi r22, 0b0100_0000
-	breq writeBlock
-
-	andi r22, 0b0010_0000
-	cpi r22, 0b0010_0000
-	breq writeBlock
-
-	andi r22, 0b0001_0000
-	cpi r22, 0b0001_0000
-	breq writeBlock
-
-	andi r22, 0b0000_1000
-	cpi r22, 0b0000_1000
-	breq writeBlock
-
-	andi r22, 0b0000_0100
-	cpi r22, 0b0000_0100
-	breq writeBlock
-
-	andi r22, 0b0000_0010
-	cpi r22, 0b0000_0010
-	breq writeBlock
-
-	andi r22, 0b0000_0001
-	cpi r22, 0b0000_0001
-	breq writeBlock
-
-	lds r16, line2L
-	andi r22, 0b1000_0000
-	cpi r22, 0b1000_0000
-	breq writeBlock
-
-	andi r22, 0b0100_0000
-	cpi r22, 0b0100_0000
-	breq writeBlock
-
-	andi r22, 0b0010_0000
-	cpi r22, 0b0010_0000
-	breq writeBlock
-
-	andi r22, 0b0001_0000
-	cpi r22, 0b0001_0000
-	breq writeBlock
-
-	andi r22, 0b0000_1000
-	cpi r22, 0b0000_1000
-	breq writeBlock
-
-	andi r22, 0b0000_0100
-	cpi r22, 0b0000_0100
-	breq writeBlock
-
-	andi r22, 0b0000_0010
-	cpi r22, 0b0000_0010
-	breq writeBlock
-
-	andi r22, 0b0000_0001
-	cpi r22, 0b0000_0001
-	breq writeBlock
-
-	ret
-
 gameLoop:
 	; clear display
 	ldi r20, 0b0000_0001
 	call func_send
 	call delay_1ms
 
-	call doLine1
-
+	; goto line 2
 	call disable_PD3
-
 	ldi r20, 0b1100_0000
 	call func_send
 	call delay_1ms
-
 	call enable_PD3
-
-	call doLine2
 
 	lds r16, wait_ms
 	call time_loop
@@ -298,27 +127,27 @@ L1: dec  r19
     brne L1
 	ret
 
-enable_PD3:
+enable_PD3: ; 5 cycles
 	in r17, PORTD
 	ori r17, 0b0000_1000 ; set PD3
 	out PORTD, r17
 	ret
 
-disable_PD3:
-	in r17, PORTD
-	andi r17, 0b1111_0111 ; set PD3
-	out PORTD, r17
-	ret
+disable_PD3: ; 5 cycles
+	in r17, PORTD ; 1
+	andi r17, 0b1111_0111 ; set PD3 1
+	out PORTD, r17 ; 1
+	ret ; 2
 
-toggle_enable_pin:
-	ldi r16,(1<<PINB0)
-	out PORTB, r16
-	nop
-	nop
-	nop
-	ldi r16,(0<<PINB0)
-	out PORTB, r16
-	ret
+toggle_enable_pin: ; 9 cycles
+	ldi r16,(1<<PINB0) ; 1
+	out PORTB, r16 ; 1
+	nop ; 1
+	nop ; 1
+	nop ; 1
+	ldi r16,(0<<PINB0) ; 1
+	out PORTB, r16 ; 1
+	ret ; 2
 
 func_set_H:
 	ldi	r20, 0b0010_0000	; naloži parameter (ukaz za lcd) v r20
@@ -331,24 +160,24 @@ func_set_H:
 	call toggle_enable_pin
 	ret
 
-func_send:
-	mov r21, r20
-	andi r21, 0b1111_0000
-	in r17, PORTD
-	andi r17, 0b0000_1111
-	or r17, r21
-	out PORTD, r17
-	call toggle_enable_pin
+func_send: ; 37 cycles
+	mov r21, r20 ; 1
+	andi r21, 0b1111_0000 ; 1
+	in r17, PORTD ; 1
+	andi r17, 0b0000_1111 ; 1
+	or r17, r21 ; 1
+	out PORTD, r17 ; 1
+	call toggle_enable_pin ; 11
 
-	mov r21, r20
-	swap r21
-	andi r21, 0b1111_0000
-	in r17, PORTD
-	andi r17, 0b0000_1111
-	or r17, r21
-	out PORTD, r17
-	call toggle_enable_pin
-	ret
+	mov r21, r20 ; 1
+	swap r21 ; 1
+	andi r21, 0b1111_0000 ; 1
+	in r17, PORTD ; 1
+	andi r17, 0b0000_1111 ; 1
+	or r17, r21 ; 1
+	out PORTD, r17 ; 1
+	call toggle_enable_pin ; 11
+	ret ; 2
 
 end_loop:
 	rjmp end_loop
@@ -356,14 +185,4 @@ end_loop:
 
 .dseg
 
-line1H: .byte 1
-line1L: .byte 1
-
-line2H: .byte 1
-line2L: .byte 1
-
-wait_ms: .byte 1
-fourLoopCounter: .byte 1
-
-line1carry: .byte 1
-line2carry: .byte 1
+time_counter: .byte 1
