@@ -24,8 +24,6 @@
 	.org 0x034
 
 start:
-	ldi r16, 255
-	sts wait_ms, r16
 	;-----------INITIALIZE STACK POINTER----------------
 	ldi r16, low(RAMEND)
 	out SPL, r16
@@ -77,24 +75,31 @@ start:
 	; enables RS
 	call enable_PD3
 
-	; load game level
-	ldi r16, 0b0011_0001
-	ldi r16, 0b0000_0100
-	ldi r16, 0b1000_0100
-	ldi r16, 0b0011_0001
-	sts line1H, r16
-	sts line2H, r16
-
-	sts line1L, r16
-	sts line2L, r16
-
-	
 	rjmp gameLoop
 
+end_loop:
+	rjmp end_loop
 
 gameLoop:
+	; check for button press, if HIGH then switch to end_loop
+	in r16, PORTD ; 1
+	andi r16, 0b0000_0100 ; po?isti use razn PD2 ; 1
+	cpi r16, 0b0000_0100 ; 1
+	breq end_loop ; 1
+
 	; clear display
+	call disable_PD3 ; 7
 	ldi r20, 0b0000_0001 ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+	call enable_PD3 ; 7
+
+	; set cursor home
+	call disable_PD3 ; 7
+	call return_home ; 32 052
+	call enable_PD3 ; 7 
+
+	ldi r20, 's' ; 1
 	call func_send ; 39
 	call delay_1ms ; 16 004
 
@@ -105,7 +110,37 @@ gameLoop:
 	call delay_1ms ; 16 004
 	call enable_PD3 ; 7
 
-	ldi r16, 500 ; oz kukrkol bo ostal do 1s
+	; load timer, inc, display, check if 255, display, if yes goto end_loop
+	lds r16, time_counter ; 2
+	inc r16 ; 1
+	sts time_counter, r16 ; 2
+	lds r16, time_counter ; 2
+	
+	call div10_8bit
+	push r17
+	call div10_8bit
+	push r17
+	call div10_8bit
+	push r17
+	
+	pop r20
+	call func_send
+	call delay_1ms
+
+	pop r20
+	call func_send
+	call delay_1ms
+
+	pop r20
+	call func_send
+	call delay_1ms
+
+
+	/*cpi r16, 255 ; 1
+	breq end_loop ; 1*/
+
+
+	ldi r16, 255 ; oz kukrkol bo ostal do 1s
 	call time_loop ; 2 + 16 009 * r16
 	rjmp gameLoop ; 2
 	;rjmp end_loop
@@ -140,28 +175,23 @@ disable_PD3: ; 5 cycles
 	out PORTD, r17 ; 1
 	ret ; 2
 
-<<<<<<< HEAD
-toggle_enable_pin:
-	in r16, PORTB
-	ori r16, 0b0000_0001
-	out PORTB, r16
-	nop
-	nop
-	nop
-	andi r16, 0b1111_1110
-	out PORTB, r16
-	ret
-=======
+return_home: ; 32 0050
+	ldi r20, 0b0000_0010 ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+	call delay_1ms ; 16 004
+	ret ; 2
+
+
 toggle_enable_pin: ; 9 cycles
-	ldi r16,(1<<PINB0) ; 1
+	ldi r22,(1<<PINB0) ; 1
 	out PORTB, r16 ; 1
 	nop ; 1
 	nop ; 1
 	nop ; 1
-	ldi r16,(0<<PINB0) ; 1
+	ldi r22,(0<<PINB0) ; 1
 	out PORTB, r16 ; 1
 	ret ; 2
->>>>>>> 3a07df78b0269ced172340adb069c80339ef0d34
 
 func_set_H:
 	ldi	r20, 0b0010_0000	; naloži parameter (ukaz za lcd) v r20
@@ -193,20 +223,34 @@ func_send: ; 37 cycles
 	call toggle_enable_pin ; 11
 	ret ; 2
 
-end_loop:
-	rjmp end_loop
+;****************************************************************************************************
+;  8-bitno deljenje z 10
+;  deli r16 z 10, r17 je ostanek
+;
+;****************************************************************************************************
+
+div10_8bit:		push r0
+				push r1
+				
+dobro:			ldi r17, 205	; more magic
+				mul r16, r17	; mind blown
+				ldi r17, 32
+				mul r17, r1		; r1 = r16/10 (celi del, seveda)
+
+				ldi r17, 10
+				mov r0, r17
+				mov r17, r16
+
+				mov r16, r1     ; spravimo rezultat v r16
+				mul r1, r0
+				sub r17, r0		; ostanek
+
+				pop r1
+				pop r0				
+				ret				; confused?
 
 
 .dseg
 
-<<<<<<< HEAD
-line1H: .byte 1
-line1L: .byte 1
-
-line2H: .byte 1
-line2L: .byte 1
-
-wait_ms: .byte 1
-=======
 time_counter: .byte 1
->>>>>>> 3a07df78b0269ced172340adb069c80339ef0d34
+

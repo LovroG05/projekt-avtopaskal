@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm Tue Dec 28 14:25:31 2021
+AVRASM ver. 2.2.8  C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm Sun Jan 02 18:37:50 2022
 
 
 EQU  SIGNATURE_000 0000001e
@@ -696,23 +696,17 @@ EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
 CSEG start        00000034
-DSEG wait_ms      00000104
-CSEG time_loop    000000b0
-CSEG func_set_H   000000d0
-CSEG func_send    000000da
-CSEG delay_1ms    000000b5
-CSEG enable_PD3   000000bf
-DSEG line1H       00000100
-DSEG line2H       00000102
-DSEG line1L       00000101
-DSEG line2L       00000103
-CSEG gameLoop     00000089
-CSEG doLine       0000006a
-CSEG writeBlock   00000083
-CSEG disable_PD3  000000c3
-CSEG L1           000000ba
-CSEG toggle_enable_pin 000000c7
-CSEG end_loop     000000ec
-DSEG fourLoopCounter 00000105
-DSEG line1carry   00000106
-DSEG line2carry   00000107
+CSEG time_loop    000000a0
+CSEG func_set_H   000000c7
+CSEG func_send    000000d1
+CSEG delay_1ms    000000a5
+CSEG enable_PD3   000000af
+CSEG gameLoop     0000005c
+CSEG end_loop     0000005b
+CSEG disable_PD3  000000b3
+CSEG return_home  000000b7
+DSEG time_counter 00000100
+CSEG div10_8bit   000000e3
+CSEG L1           000000aa
+CSEG toggle_enable_pin 000000bf
+CSEG dobro        000000e5
