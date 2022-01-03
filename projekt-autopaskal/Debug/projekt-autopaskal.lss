@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm Tue Dec 28 14:25:31 2021
+AVRASM ver. 2.2.8  C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm Mon Jan 03 21:39:08 2022
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\avrasm\inc\m328Pdef.inc'
@@ -1007,257 +1007,313 @@ AVRASM ver. 2.2.8  C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm
                                   .cseg
                                  	.org 0x00
 000000 c033                      	rjmp start
+                                 	.org INT0addr
+000002 c062                      	rjmp displayTime
                                  	.org 0x034
                                  
                                  start:
-000034 ef0f                      	ldi r16, 255
-000035 9300 0104                 	sts wait_ms, r16
                                  	;-----------INITIALIZE STACK POINTER----------------
-000037 ef0f                      	ldi r16, low(RAMEND)
-000038 bf0d                      	out SPL, r16
-000039 e008                      	ldi r16, high(RAMEND)
-00003a bf0e                      	out SPH, r16
+000034 ef0f                      	ldi r16, low(RAMEND)
+000035 bf0d                      	out SPL, r16
+000036 e008                      	ldi r16, high(RAMEND)
+000037 bf0e                      	out SPH, r16
+                                 	;---------------------------------------------------
+                                 
+                                 	;-----------INITIALIZE INTERRUPT 0------------------
+000038 e002                      	ldi r16, (1<<ISC01)|(0<<ISC00)	
+000039 9300 0069                 	sts EICRA, r16
+00003b e001                      	ldi r16, (1<<INT0)				
+00003c bb0d                      	out EIMSK, r16					
+00003d 9478                      	sei
                                  	;---------------------------------------------------
                                  
                                  	;-----------SET OUTPUT PINS-------------------------
                                  	; set DDRD to OUTPUT GOD DAMMNIT + PD2 IN
-00003b ef0b                      	ldi r16, 0b1111_1011
-00003c b90a                          out DDRD,r16
+00003e ef0b                      	ldi r16, 0b1111_1011
+00003f b90a                          out DDRD,r16
+                                 
+                                 	/*in r16, PORTD
+                                 	;andi r16, 0b1111_1011
+                                 	ori r16, 0b0000_0100
+                                 	out PORTD, r16*/
                                  	
                                  
                                  	; PB0 - ENABLE display pin
-00003d e001                      	ldi	r16,(1<<PINB0)
-00003e b904                          out DDRB,r16
+000040 e001                      	ldi	r16,(1<<PINB0)
+000041 b904                          out DDRB,r16
                                  	;---------------------------------------------------
-00003f e100                      	ldi r16, 16
-000040 940e 00b0                 	call time_loop
+000042 e100                      	ldi r16, 16
+000043 940e 00eb                 	call time_loop
                                  	; dobr zdej pa loh gledate to
                                  
                                  	; okej apparently rabm H od func set poslt 2x so here it goes
-000042 940e 00d0                 	call func_set_H
+000045 940e 0112                 	call func_set_H
                                  	; in pol rabm ?akat 4.1ms so 5ms
-000044 e006                      	ldi r16, 6
-000045 940e 00b0                 	call time_loop
+000047 e006                      	ldi r16, 6
+000048 940e 00eb                 	call time_loop
                                  
                                  	; in to je full function set
-000047 e248                      	ldi r20, 0x28
-000048 940e 00da                 	call func_send
-00004a 940e 00b5                 	call delay_1ms
+00004a e248                      	ldi r20, 0x28
+00004b 940e 011c                 	call func_send
+00004d 940e 00f0                 	call delay_1ms
                                  	
                                  	; display on
-00004c e04e                      	ldi r20, 0b0000_1110
-00004d 940e 00da                 	call func_send
-00004f 940e 00b5                 	call delay_1ms
+00004f e04e                      	ldi r20, 0b0000_1110
+000050 940e 011c                 	call func_send
+000052 940e 00f0                 	call delay_1ms
                                  
                                  	; clear display
-000051 e041                      	ldi r20, 0b0000_0001
-000052 940e 00da                 	call func_send
-000054 940e 00b5                 	call delay_1ms
+000054 e041                      	ldi r20, 0b0000_0001
+000055 940e 011c                 	call func_send
+000057 940e 00f0                 	call delay_1ms
                                  	;call delay_1ms
                                  
                                  	; entry mode set
-000056 e047                      	ldi r20, 0b0000_0111
-000057 940e 00da                 	call func_send
-000059 940e 00b5                 	call delay_1ms
+000059 e047                      	ldi r20, 0b0000_0111
+00005a 940e 011c                 	call func_send
+00005c 940e 00f0                 	call delay_1ms
                                  
                                  	; enables RS
-00005b 940e 00bf                 	call enable_PD3
-                                 
-                                 	; load game level
-00005d e301                      	ldi r16, 0b0011_0001
-00005e e004                      	ldi r16, 0b0000_0100
-00005f e804                      	ldi r16, 0b1000_0100
-000060 e301                      	ldi r16, 0b0011_0001
-000061 9300 0100                 	sts line1H, r16
-000063 9300 0102                 	sts line2H, r16
-                                 
-000065 9300 0101                 	sts line1L, r16
-000067 9300 0103                 	sts line2L, r16
-                                 
+00005e 940e 00fa                 	call enable_PD3
                                  	
-000069 c01f                      	rjmp gameLoop
-                                 
-                                 /*increaseFPS:
-                                 	lds r17, wait_ms
-                                 	dec r17
-                                 	sts wait_ms, r17
-                                 	clr r17
-                                 	sts fourLoopCounter, r17
-                                 	ret*/
-                                 
-                                 /*increaseFourLoopCounter:
-                                 	lds r17, fourLoopCounter
-                                 	inc r17
-                                 	sts fourLoopCounter, r17
-                                 	ret*/
-                                 
-                                 /*doSpeed:
-                                 	lds r16, fourLoopCounter
-                                 	cpi r16, 255
-                                 	breq increaseFPS
-                                 	cpi r16, 255
-                                 	brne increaseFourLoopCounter
-                                 	ret*/
-                                 
-                                 doLine:
-00006a 7860                      	andi r22, 0b1000_0000
-00006b 3860                      	cpi r22, 0b1000_0000
-00006c f0b1                      	breq writeBlock
-                                 
-00006d 7460                      	andi r22, 0b0100_0000
-00006e 3460                      	cpi r22, 0b0100_0000
-00006f f099                      	breq writeBlock
-                                 
-000070 7260                      	andi r22, 0b0010_0000
-000071 3260                      	cpi r22, 0b0010_0000
-000072 f081                      	breq writeBlock
-                                 
-000073 7160                      	andi r22, 0b0001_0000
-000074 3160                      	cpi r22, 0b0001_0000
-000075 f069                      	breq writeBlock
-                                 
-000076 7068                      	andi r22, 0b0000_1000
-000077 3068                      	cpi r22, 0b0000_1000
-000078 f051                      	breq writeBlock
-                                 
-000079 7064                      	andi r22, 0b0000_0100
-00007a 3064                      	cpi r22, 0b0000_0100
-00007b f039                      	breq writeBlock
-                                 
-00007c 7062                      	andi r22, 0b0000_0010
-00007d 3062                      	cpi r22, 0b0000_0010
-00007e f021                      	breq writeBlock
-                                 
-00007f 7061                      	andi r22, 0b0000_0001
-000080 3061                      	cpi r22, 0b0000_0001
-000081 f009                      	breq writeBlock
+000060 e000                      	ldi r16, 0
+000061 9300 0100                 	sts time_counter, r16
                                  	
-000082 9508                      	ret
+000063 940c 00a3                 	jmp gameLoop
                                  
-                                 writeBlock:
-000083 e649                      	ldi r20, 'i'
-000084 940e 00da                 	call func_send
-000086 940e 00b5                 	call delay_1ms
-000088 9508                      	ret
-                                 
-                                 gameLoop:
+                                 displayTime:
                                  	; clear display
-000089 940e 00c3                 	call disable_PD3
-00008b e041                      	ldi r20, 0b0000_0001
-00008c 940e 00da                 	call func_send
-00008e 940e 00b5                 	call delay_1ms
-                                 	;call delay_1ms
-000090 940e 00bf                 	call enable_PD3
+000065 940e 00fe                 	call disable_PD3 ; 7
+000067 e041                      	ldi r20, 0b0000_0001 ; 1
+000068 940e 011c                 	call func_send ; 39
+00006a 940e 00f0                 	call delay_1ms ; 16 004
                                  
-000092 9100 0100                 	lds r16, line1H
-000094 940e 006a                 	call doLine
-000096 9100 0101                 	lds r16, line1L
-000098 940e 006a                 	call doLine
+                                 	; set cursor home
+00006c 940e 0102                 	call return_home ; 32 052
+00006e 940e 00fa                 	call enable_PD3 ; 7 
                                  
-00009a 940e 00c3                 	call disable_PD3
-00009c ec40                      	ldi r20, 0b1100_0000
-00009d 940e 00da                 	call func_send
-00009f 940e 00b5                 	call delay_1ms
-0000a1 940e 00bf                 	call enable_PD3
+000070 e743                      	ldi r20, 's' ; 1
+000071 940e 011c                 	call func_send ; 39
+000073 940e 00f0                 	call delay_1ms ; 16 004
                                  
-0000a3 9100 0102                 	lds r16, line2H
-0000a5 940e 006a                 	call doLine
-0000a7 9100 0103                 	lds r16, line2L
-0000a9 940e 006a                 	call doLine
+                                 	; goto line 2
+000075 940e 00fe                 	call disable_PD3 ; 7
+000077 ec40                      	ldi r20, 0b1100_0000 ; 1
+000078 940e 011c                 	call func_send ; 39
+00007a 940e 00f0                 	call delay_1ms ; 16 004
+00007c 940e 00fa                 	call enable_PD3 ; 7
                                  
-0000ab 9100 0104                 	lds r16, wait_ms
-0000ad 940e 00b0                 	call time_loop
-                                 	; call doSpeed
-0000af cfd9                      	rjmp gameLoop
-                                 	; rjmp end_loop
+                                 	; load timer, inc, display, check if 255, display, if yes goto end_loop
+00007e 9100 0100                 	lds r16, time_counter ; 2
+000080 9503                      	inc r16 ; 1
+000081 9300 0100                 	sts time_counter, r16 ; 2
+000083 9100 0100                 	lds r16, time_counter ; 2
                                  
-                                 time_loop:
-0000b0 940e 00b5                 	call delay_1ms
-0000b2 950a                      	dec r16
-0000b3 f7e1                      	brne time_loop
-0000b4 9508                      	ret
+000085 940e 012e                 	call div10_8bit ; 18
+000087 931f                      	push r17 ; 1
+000088 940e 012e                 	call div10_8bit ; 18
+00008a 931f                      	push r17 ; 1
+00008b 940e 012e                 	call div10_8bit ; 18
+00008d 931f                      	push r17 ; 1
                                  
-                                 delay_1ms:
-0000b5 e125                      	ldi  r18, 21
-0000b6 ec37                      	ldi  r19, 199
-0000b7 940e 00ba                 	call L1
-0000b9 9508                      	ret
+00008e e3a0                      	ldi r26, 48 ; 1
+00008f 914f                      	pop r20 ; 1
+000090 0f4a                      	add r20, r26 ; 1
+000091 940e 011c                 	call func_send ; 39
+000093 940e 00f0                 	call delay_1ms ; 16 004
+000095 914f                      	pop r20 ; 1
+000096 0f4a                      	add r20, r26 ; 1
+000097 940e 011c                 	call func_send ; 39
+000099 940e 00f0                 	call delay_1ms ; 16 004
+00009b 914f                      	pop r20 ; 1
+00009c 0f4a                      	add r20, r26 ; 1
+00009d 940e 011c                 	call func_send ; 39
+00009f 940e 00f0                 	call delay_1ms ; 16 004
                                  
-0000ba 953a                      L1: dec  r19
-0000bb f7f1                          brne L1
-0000bc 952a                          dec  r18
-0000bd f7e1                          brne L1
-0000be 9508                      	ret
+0000a1 c000                      	rjmp end_loop
                                  
-                                 enable_PD3:
-0000bf b11b                      	in r17, PORTD
-0000c0 6018                      	ori r17, 0b0000_1000 ; set PD3
-0000c1 b91b                      	out PORTD, r17
-0000c2 9508                      	ret
-                                 
-                                 disable_PD3:
-0000c3 b11b                      	in r17, PORTD
-0000c4 7f17                      	andi r17, 0b1111_0111 ; set PD3
-0000c5 b91b                      	out PORTD, r17
-0000c6 9508                      	ret
-                                 
-                                 toggle_enable_pin:
-0000c7 b105                      	in r16, PORTB
-0000c8 6001                      	ori r16, 0b0000_0001
-0000c9 b905                      	out PORTB, r16
-0000ca 0000                      	nop
-0000cb 0000                      	nop
-0000cc 0000                      	nop
-0000cd 7f0e                      	andi r16, 0b1111_1110
-0000ce b905                      	out PORTB, r16
-0000cf 9508                      	ret
-                                 
-                                 func_set_H:
-0000d0 e240                      	ldi	r20, 0b0010_0000	; naloži parameter (ukaz za lcd) v r20
-0000d1 2f54                      	mov r21, r20		; kopira r20 v r21
-0000d2 7f50                      	andi r21, 0b1111_0000	; po?isti L ukaza
-0000d3 b11b                      	in r17, PORTD		; naloži PORTD v r17
-0000d4 701f                      	andi r17, 0b0000_1111 ; po?isti zgornje bite
-0000d5 2b15                      	or r17, r21			; kombinira r17 in r21
-0000d6 b91b                      	out PORTD, r17		; nastavi PORTD na r17
-0000d7 940e 00c7                 	call toggle_enable_pin
-0000d9 9508                      	ret
-                                 
-                                 func_send:
-0000da 2f54                      	mov r21, r20
-0000db 7f50                      	andi r21, 0b1111_0000
-0000dc b11b                      	in r17, PORTD
-0000dd 701f                      	andi r17, 0b0000_1111
-0000de 2b15                      	or r17, r21
-0000df b91b                      	out PORTD, r17
-0000e0 940e 00c7                 	call toggle_enable_pin
-                                 
-0000e2 2f54                      	mov r21, r20
-0000e3 9552                      	swap r21
-0000e4 7f50                      	andi r21, 0b1111_0000
-0000e5 b11b                      	in r17, PORTD
-0000e6 701f                      	andi r17, 0b0000_1111
-0000e7 2b15                      	or r17, r21
-0000e8 b91b                      	out PORTD, r17
-0000e9 940e 00c7                 	call toggle_enable_pin
-0000eb 9508                      	ret
                                  
                                  end_loop:
-0000ec cfff                      	rjmp end_loop
+                                 	
+0000a2 cfff                      	rjmp end_loop
+                                 
+                                 
+                                 gameLoop:
+0000a3 9100 0100                 	lds r16, time_counter ; 2
+0000a5 3f0f                      	cpi r16, 255 ; 1
+0000a6 f3d9                      	breq end_loop ; 1
+                                 
+                                 	; check for button press, if HIGH then switch to end_loop
+0000a7 b10b                      	in r16, PORTD ; 1
+0000a8 7004                      	andi r16, 0b0000_0100 ; po?isti use razn PD2 ; 1
+0000a9 3004                      	cpi r16, 0b0000_0100 ; 1
+0000aa f3b9                      	breq end_loop ; 1
+                                 
+                                 	; clear display
+0000ab 940e 00fe                 	call disable_PD3 ; 7
+0000ad e041                      	ldi r20, 0b0000_0001 ; 1
+0000ae 940e 011c                 	call func_send ; 39
+0000b0 940e 00f0                 	call delay_1ms ; 16 004
+                                 
+                                 	; set cursor home
+0000b2 940e 0102                 	call return_home ; 32 052
+0000b4 940e 00fa                 	call enable_PD3 ; 7 
+                                 
+0000b6 e743                      	ldi r20, 's' ; 1
+0000b7 940e 011c                 	call func_send ; 39
+0000b9 940e 00f0                 	call delay_1ms ; 16 004
+                                 
+                                 	; goto line 2
+0000bb 940e 00fe                 	call disable_PD3 ; 7
+0000bd ec40                      	ldi r20, 0b1100_0000 ; 1
+0000be 940e 011c                 	call func_send ; 39
+0000c0 940e 00f0                 	call delay_1ms ; 16 004
+0000c2 940e 00fa                 	call enable_PD3 ; 7
+                                 
+                                 	; load timer, inc, display, check if 255, display, if yes goto end_loop
+0000c4 9100 0100                 	lds r16, time_counter ; 2
+0000c6 9503                      	inc r16 ; 1
+0000c7 9300 0100                 	sts time_counter, r16 ; 2
+0000c9 9100 0100                 	lds r16, time_counter ; 2
+                                 
+0000cb 940e 012e                 	call div10_8bit ; 18
+0000cd 931f                      	push r17 ; 1
+0000ce 940e 012e                 	call div10_8bit ; 18
+0000d0 931f                      	push r17 ; 1
+0000d1 940e 012e                 	call div10_8bit ; 18
+0000d3 931f                      	push r17 ; 1
+                                 
+0000d4 e3a0                      	ldi r26, 48 ; 1
+0000d5 914f                      	pop r20 ; 1
+0000d6 0f4a                      	add r20, r26 ; 1
+0000d7 940e 011c                 	call func_send ; 39
+0000d9 940e 00f0                 	call delay_1ms ; 16 004
+0000db 914f                      	pop r20 ; 1
+0000dc 0f4a                      	add r20, r26 ; 1
+0000dd 940e 011c                 	call func_send ; 39
+0000df 940e 00f0                 	call delay_1ms ; 16 004
+0000e1 914f                      	pop r20 ; 1
+0000e2 0f4a                      	add r20, r26 ; 1
+0000e3 940e 011c                 	call func_send ; 39
+0000e5 940e 00f0                 	call delay_1ms ; 16 004
+                                 
+0000e7 ef0f                      	ldi r16, 255 ; oz kukrkol bo ostal do 1s
+0000e8 940e 00eb                 	call time_loop ; 2 + 16 009 * r16
+0000ea cfb8                      	rjmp gameLoop ; 2
+                                 	;rjmp end_loop
+                                 
+                                 time_loop: ; 16 009 * r16
+0000eb 940e 00f0                 	call delay_1ms ; 16 004
+0000ed 950a                      	dec r16 ; 1
+0000ee f7e1                      	brne time_loop ; 2
+0000ef 9508                      	ret ; 2
+                                 
+                                 delay_1ms:
+0000f0 e125                      	ldi  r18, 21
+0000f1 ec37                      	ldi  r19, 199
+0000f2 940e 00f5                 	call L1
+0000f4 9508                      	ret
+                                 
+0000f5 953a                      L1: dec  r19
+0000f6 f7f1                          brne L1
+0000f7 952a                          dec  r18
+0000f8 f7e1                          brne L1
+0000f9 9508                      	ret
+                                 
+                                 enable_PD3: ; 5 cycles
+0000fa b11b                      	in r17, PORTD
+0000fb 6018                      	ori r17, 0b0000_1000 ; set PD3
+0000fc b91b                      	out PORTD, r17
+0000fd 9508                      	ret
+                                 
+                                 disable_PD3: ; 5 cycles
+0000fe b11b                      	in r17, PORTD ; 1
+0000ff 7f17                      	andi r17, 0b1111_0111 ; set PD3 1
+000100 b91b                      	out PORTD, r17 ; 1
+000101 9508                      	ret ; 2
+                                 
+                                 return_home: ; 32 0050
+000102 e042                      	ldi r20, 0b0000_0010 ; 1
+000103 940e 011c                 	call func_send ; 39
+000105 940e 00f0                 	call delay_1ms ; 16 004
+000107 940e 00f0                 	call delay_1ms ; 16 004
+000109 9508                      	ret ; 2
+                                 
+                                 toggle_enable_pin: ; 9 cycles
+00010a e001                      	ldi r16,(1<<PINB0) ; 1
+00010b b905                      	out PORTB, r16 ; 1
+00010c 0000                      	nop ; 1
+00010d 0000                      	nop ; 1
+00010e 0000                      	nop ; 1
+00010f e000                      	ldi r16,(0<<PINB0) ; 1
+000110 b905                      	out PORTB, r16 ; 1
+000111 9508                      	ret ; 2
+                                 
+                                 
+                                 func_set_H:
+000112 e240                      	ldi	r20, 0b0010_0000	; naloži parameter (ukaz za lcd) v r20
+000113 2f54                      	mov r21, r20		; kopira r20 v r21
+000114 7f50                      	andi r21, 0b1111_0000	; po?isti L ukaza
+000115 b11b                      	in r17, PORTD		; naloži PORTD v r17
+000116 701f                      	andi r17, 0b0000_1111 ; po?isti zgornje bite
+000117 2b15                      	or r17, r21			; kombinira r17 in r21
+000118 b91b                      	out PORTD, r17		; nastavi PORTD na r17
+000119 940e 010a                 	call toggle_enable_pin
+00011b 9508                      	ret
+                                 
+                                 func_send: ; 37 cycles
+00011c 2f54                      	mov r21, r20 ; 1
+00011d 7f50                      	andi r21, 0b1111_0000 ; 1
+00011e b11b                      	in r17, PORTD ; 1
+00011f 701f                      	andi r17, 0b0000_1111 ; 1
+000120 2b15                      	or r17, r21 ; 1
+000121 b91b                      	out PORTD, r17 ; 1
+000122 940e 010a                 	call toggle_enable_pin ; 11
+                                 
+000124 2f54                      	mov r21, r20 ; 1
+000125 9552                      	swap r21 ; 1
+000126 7f50                      	andi r21, 0b1111_0000 ; 1
+000127 b11b                      	in r17, PORTD ; 1
+000128 701f                      	andi r17, 0b0000_1111 ; 1
+000129 2b15                      	or r17, r21 ; 1
+00012a b91b                      	out PORTD, r17 ; 1
+00012b 940e 010a                 	call toggle_enable_pin ; 11
+00012d 9508                      	ret ; 2
+                                 
+                                 
+                                 
+                                 ;****************************************************************************************************
+                                 ;  8-bitno deljenje z 10
+                                 ;  deli r16 z 10, r17 je ostanek
+                                 ;
+                                 ;****************************************************************************************************
+                                 
+                                 div10_8bit:		; 16 ciklov
+00012e 920f                      				push r0 ; 1
+00012f 921f                      				push r1 ; 1
+                                 				
+000130 ec1d                      dobro:			ldi r17, 205	; more magic ; 1
+000131 9f01                      				mul r16, r17	; mind blown ; 1
+000132 e210                      				ldi r17, 32 ; 1
+000133 9d11                      				mul r17, r1		; r1 = r16/10 (celi del, seveda) ; 1
+                                 
+000134 e01a                      				ldi r17, 10 ; 1
+000135 2e01                      				mov r0, r17 ; 1
+000136 2f10                      				mov r17, r16 ; 1
+                                 
+000137 2d01                      				mov r16, r1     ; spravimo rezultat v r16 ; 1
+000138 9c10                      				mul r1, r0 ; 1
+000139 1910                      				sub r17, r0		; ostanek ; 1
+                                 
+00013a 901f                      				pop r1 ; 1
+00013b 900f                      				pop r0 ; 1		
+00013c 9508                      				ret	; 2			; confused?
                                  
                                  
                                  .dseg
                                  
-000100                           line1H: .byte 1
-000101                           line1L: .byte 1
+000100                           time_counter: .byte 1
                                  
-000102                           line2H: .byte 1
-000103                           line2L: .byte 1
-                                 
-000104                           wait_ms: .byte 1
-000105                           fourLoopCounter: .byte 1
-                                 
-000106                           line1carry: .byte 1
 
 
 RESOURCE USE INFORMATION
@@ -1275,40 +1331,40 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega328P" register use summary:
-x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
+x  :   0 y  :   0 z  :   0 r0 :   5 r1 :   5 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  31 r17:  18 r18:   2 r19:   2 r20:  11 
-r21:  10 r22:  16 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
+r13:   0 r14:   0 r15:   0 r16:  38 r17:  32 r18:   2 r19:   2 r20:  27 
+r21:  10 r22:   0 r23:   0 r24:   0 r25:   0 r26:   8 r27:   0 r28:   0 
 r29:   0 r30:   0 r31:   0 
-Registers used: 7 out of 35 (20.0%)
+Registers used: 9 out of 35 (25.7%)
 
 "ATmega328P" instruction use summary:
-.lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
-andi  :  16 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :   8 brge  :   0 brhc  :   0 
+.lds  :   0 .sts  :   0 adc   :   0 add   :   6 adiw  :   0 and   :   0 
+andi  :   8 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :   2 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
 brne  :   3 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :  32 cbi   :   0 cbr   :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :  61 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   8 cpse  :   0 dec   :   3 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   6 inc   :   0 jmp   :   0 
-ld    :   0 ldd   :   0 ldi   :  21 lds   :   5 lpm   :   0 lsl   :   0 
-lsr   :   0 mov   :   3 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   3 or    :   3 ori   :   2 out   :  11 pop   :   0 
-push  :   0 rcall :   0 ret   :  10 reti  :   0 rjmp  :   4 rol   :   0 
+cpi   :   2 cpse  :   0 dec   :   3 eor   :   0 fmul  :   0 fmuls :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   6 inc   :   2 jmp   :   1 
+ld    :   0 ldd   :   0 ldi   :  31 lds   :   5 lpm   :   0 lsl   :   0 
+lsr   :   0 mov   :   6 movw  :   0 mul   :   3 muls  :   0 mulsu :   0 
+neg   :   0 nop   :   3 or    :   3 ori   :   1 out   :  12 pop   :   8 
+push  :   8 rcall :   0 ret   :  10 reti  :   0 rjmp  :   5 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
-sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   5 
-sub   :   0 subi  :   0 swap  :   1 tst   :   0 wdr   :   0 
-Instructions used: 18 out of 113 (15.9%)
+sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
+sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   4 
+sub   :   1 subi  :   0 swap  :   1 tst   :   0 wdr   :   0 
+Instructions used: 26 out of 113 (23.0%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0001da    372      0    372   32768   1.1%
-[.dseg] 0x000100 0x000108      0      8      8    2048   0.4%
+[.cseg] 0x000000 0x00027a    534      0    534   32768   1.6%
+[.dseg] 0x000100 0x000101      0      1      1    2048   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
 Assembly complete, 0 errors, 0 warnings

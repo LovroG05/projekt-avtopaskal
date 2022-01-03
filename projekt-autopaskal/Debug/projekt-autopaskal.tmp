@@ -22,26 +22,21 @@
   <FILE>projekt-autopaskal.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <start><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>26</LINE></start>
-  <wait_ms><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>271</LINE></wait_ms>
-  <time_loop><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>188</LINE></time_loop>
-  <func_set_H><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>229</LINE></func_set_H>
-  <func_send><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>240</LINE></func_send>
-  <delay_1ms><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>194</LINE></delay_1ms>
-  <enable_PD3><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>206</LINE></enable_PD3>
-  <line1H><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>265</LINE></line1H>
-  <line2H><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>268</LINE></line2H>
-  <line1L><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>266</LINE></line1L>
-  <line2L><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>269</LINE></line2L>
-  <gameLoop><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>157</LINE></gameLoop>
-  <doLine><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>116</LINE></doLine>
-  <writeBlock><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>151</LINE></writeBlock>
-  <disable_PD3><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>212</LINE></disable_PD3>
-  <L1><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>200</LINE></L1>
-  <toggle_enable_pin><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>218</LINE></toggle_enable_pin>
-  <end_loop><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>259</LINE></end_loop>
-  <fourLoopCounter><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>272</LINE></fourLoopCounter>
-  <line1carry><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>274</LINE></line1carry>
-  <line2carry><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>275</LINE></line2carry>
+  <start><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>28</LINE></start>
+  <displayTime><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>98</LINE></displayTime>
+  <time_loop><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>219</LINE></time_loop>
+  <func_set_H><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>267</LINE></func_set_H>
+  <func_send><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>278</LINE></func_send>
+  <delay_1ms><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>225</LINE></delay_1ms>
+  <enable_PD3><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>237</LINE></enable_PD3>
+  <time_counter><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>329</LINE></time_counter>
+  <gameLoop><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>155</LINE></gameLoop>
+  <disable_PD3><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>243</LINE></disable_PD3>
+  <return_home><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>249</LINE></return_home>
+  <div10_8bit><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>305</LINE></div10_8bit>
+  <end_loop><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>150</LINE></end_loop>
+  <L1><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>231</LINE></L1>
+  <toggle_enable_pin><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>256</LINE></toggle_enable_pin>
+  <dobro><FILE>C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm</FILE><LINE>309</LINE></dobro>
  </LABELS>
 </ASSEMBLER_INFO>
