@@ -22,7 +22,7 @@
 	.org 0x00
 	rjmp start
 	.org INT0addr
-	rjmp displayTime
+	rjmp int0setter
 	.org 0x034
 
 start:
@@ -92,10 +92,22 @@ start:
 	
 	ldi r16, 0
 	sts time_counter, r16
+
+	ldi r16, 0
+	sts interruptFlag, r16
 	
 	jmp gameLoop
 
+int0setter:
+	ldi r16, 1
+	sts interruptFlag, r16
+	cli
+	reti
+
 displayTime:
+	ldi r16, 0
+	sts interruptFlag, r16
+
 	; clear display
 	call disable_PD3 ; 7
 	ldi r20, 0b0000_0001 ; 1
@@ -123,46 +135,35 @@ displayTime:
 	sts time_counter, r16 ; 2
 	lds r16, time_counter ; 2
 
-	call div10_8bit ; 18
-	push r17 ; 1
-	call div10_8bit ; 18
-	push r17 ; 1
-	call div10_8bit ; 18
-	push r17 ; 1
+	call writeNumber
 
-	ldi r26, 48 ; 1
-	pop r20 ; 1
-	add r20, r26 ; 1
-	call func_send ; 39
-	call delay_1ms ; 16 004
-	pop r20 ; 1
-	add r20, r26 ; 1
-	call func_send ; 39
-	call delay_1ms ; 16 004
-	pop r20 ; 1
-	add r20, r26 ; 1
-	call func_send ; 39
-	call delay_1ms ; 16 004
+	sei
+	jmp end_loop
 
-	rjmp end_loop
+resetStopwatch:
+	ldi r16, 0
+	sts time_counter, r16
+	ldi r16, 0
+	sts interruptFlag, r16
 
+	jmp gameLoop
 
 end_loop:
-	
+	lds r16, interruptFlag
+	cpi r16, 1
+	breq resetStopwatch
+
 	rjmp end_loop
 
-
 gameLoop:
+	lds r16, interruptFlag
+	cpi r16, 1
+	breq displayTime
+
 	lds r16, time_counter ; 2
 	cpi r16, 255 ; 1
 	breq end_loop ; 1
 
-	; check for button press, if HIGH then switch to end_loop
-	in r16, PORTD ; 1
-	andi r16, 0b0000_0100 ; po?isti use razn PD2 ; 1
-	cpi r16, 0b0000_0100 ; 1
-	breq end_loop ; 1
-
 	; clear display
 	call disable_PD3 ; 7
 	ldi r20, 0b0000_0001 ; 1
@@ -190,26 +191,7 @@ gameLoop:
 	sts time_counter, r16 ; 2
 	lds r16, time_counter ; 2
 
-	call div10_8bit ; 18
-	push r17 ; 1
-	call div10_8bit ; 18
-	push r17 ; 1
-	call div10_8bit ; 18
-	push r17 ; 1
-
-	ldi r26, 48 ; 1
-	pop r20 ; 1
-	add r20, r26 ; 1
-	call func_send ; 39
-	call delay_1ms ; 16 004
-	pop r20 ; 1
-	add r20, r26 ; 1
-	call func_send ; 39
-	call delay_1ms ; 16 004
-	pop r20 ; 1
-	add r20, r26 ; 1
-	call func_send ; 39
-	call delay_1ms ; 16 004
+	call writeNumber
 
 	ldi r16, 255 ; oz kukrkol bo ostal do 1s
 	call time_loop ; 2 + 16 009 * r16
@@ -232,6 +214,29 @@ L1: dec  r19
     brne L1
     dec  r18
     brne L1
+	ret
+
+writeNumber:
+	call div10_8bit ; 18
+	push r17 ; 1
+	call div10_8bit ; 18
+	push r17 ; 1
+	call div10_8bit ; 18
+	push r17 ; 1
+
+	ldi r26, 48 ; 1
+	pop r20 ; 1
+	add r20, r26 ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+	pop r20 ; 1
+	add r20, r26 ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+	pop r20 ; 1
+	add r20, r26 ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
 	ret
 
 enable_PD3: ; 5 cycles
@@ -327,4 +332,5 @@ dobro:			ldi r17, 205	; more magic ; 1
 .dseg
 
 time_counter: .byte 1
+interruptFlag: .byte 1
 
