@@ -91,7 +91,10 @@ start:
 	call enable_PD3
 	
 	ldi r16, 0
-	sts time_counter, r16
+	sts second_counter, r16
+
+	ldi r16, 0
+	sts minute_counter, r16
 
 	ldi r16, 0
 	sts interruptFlag, r16
@@ -104,45 +107,11 @@ int0setter:
 	cli
 	reti
 
-displayTime:
-	ldi r16, 0
-	sts interruptFlag, r16
-
-	; clear display
-	call disable_PD3 ; 7
-	ldi r20, 0b0000_0001 ; 1
-	call func_send ; 39
-	call delay_1ms ; 16 004
-
-	; set cursor home
-	call return_home ; 32 052
-	call enable_PD3 ; 7 
-
-	ldi r20, 's' ; 1
-	call func_send ; 39
-	call delay_1ms ; 16 004
-
-	; goto line 2
-	call disable_PD3 ; 7
-	ldi r20, 0b1100_0000 ; 1
-	call func_send ; 39
-	call delay_1ms ; 16 004
-	call enable_PD3 ; 7
-
-	; load timer, inc, display, check if 255, display, if yes goto end_loop
-	lds r16, time_counter ; 2
-	inc r16 ; 1
-	sts time_counter, r16 ; 2
-	lds r16, time_counter ; 2
-
-	call writeNumber
-
-	sei
-	jmp end_loop
-
 resetStopwatch:
 	ldi r16, 0
-	sts time_counter, r16
+	sts second_counter, r16
+	ldi r16, 0
+	sts minute_counter, r16
 	ldi r16, 0
 	sts interruptFlag, r16
 
@@ -152,25 +121,17 @@ end_loop:
 	lds r16, interruptFlag
 	cpi r16, 1
 	breq resetStopwatch
-
+	; maybe add some delay, it doesnt really matter tho
 	rjmp end_loop
 
-gameLoop:
-	lds r16, interruptFlag
-	cpi r16, 1
-	breq displayTime
-
-	lds r16, time_counter ; 2
-	cpi r16, 255 ; 1
-	breq end_loop ; 1
-
-	; clear display
-	call disable_PD3 ; 7
-	ldi r20, 0b0000_0001 ; 1
-	call func_send ; 39
-	call delay_1ms ; 16 004
+displayTime:
+	ldi r16, 0
+	sts interruptFlag, r16
+	
+	call clearDisplay ; 16 060
 
 	; set cursor home
+	call disable_PD3 ; 7
 	call return_home ; 32 052
 	call enable_PD3 ; 7 
 
@@ -178,25 +139,52 @@ gameLoop:
 	call func_send ; 39
 	call delay_1ms ; 16 004
 
-	; goto line 2
-	call disable_PD3 ; 7
-	ldi r20, 0b1100_0000 ; 1
+	ldi r20, ':' ; 1
 	call func_send ; 39
 	call delay_1ms ; 16 004
-	call enable_PD3 ; 7
 
-	; load timer, inc, display, check if 255, display, if yes goto end_loop
-	lds r16, time_counter ; 2
-	inc r16 ; 1
-	sts time_counter, r16 ; 2
-	lds r16, time_counter ; 2
-
+	; load timer, inc, display
+	lds r16, second_counter ; 2
 	call writeNumber
 
-	ldi r16, 255 ; oz kukrkol bo ostal do 1s
-	call time_loop ; 2 + 16 009 * r16
+	call gotoLine2
+
+	ldi r20, 'm' ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+
+	ldi r20, 'i' ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+
+	ldi r20, 'n' ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+
+	ldi r20, ':' ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+
+	; load timer, display
+	lds r16, minute_counter ; 2
+	call writeNumber ; 48 197
+
+	sei
+	jmp end_loop
+
+gameLoop:
+	lds r16, interruptFlag ; 2
+	cpi r16, 1 ; 1
+	breq displayTime ; 1
+
+	lds r16, minute_counter ; 2
+	cpi r16, 255 ; 1
+	breq displayTime ; 1
+
+	call handleDisplay ; 256 865
+
+	call delayTillEOS ; 15 743 121
 	rjmp gameLoop ; 2
-	;rjmp end_loop
 
 time_loop: ; 16 009 * r16
 	call delay_1ms ; 16 004
@@ -216,7 +204,82 @@ L1: dec  r19
     brne L1
 	ret
 
-writeNumber:
+delayTillEOS:
+	ldi r18, 80
+	ldi r19, 222
+	ldi r20, 102
+L2:
+	dec r20
+	brne L2
+	dec r19
+	brne L2
+	dec r18
+	brne L2
+	nop
+	ret
+
+incMinute: ; 10
+	lds r16, minute_counter ; 2
+	inc r16 ; 1
+	sts minute_counter, r16 ; 2
+	ldi r16, 0 ; 1
+	sts second_counter, r16 ; 2
+	ret ; 2
+
+handleDisplay: ; 256 863 ciklov
+	call clearDisplay ; 16 062
+
+	; set cursor home
+	call disable_PD3 ; 7
+	call return_home ; 32 052
+	call enable_PD3 ; 7 
+
+	ldi r20, 's' ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+
+	ldi r20, ':' ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+
+	; load timer, inc, display
+	lds r16, second_counter ; 2
+	inc r16 ; 1
+	sts second_counter, r16 ; 2
+	lds r16, second_counter ; 2
+
+	lds r16, second_counter ; 2
+	cpi r16, 60 ; 1
+	breq incMinute ; 1 (napaka pri vsaki minuti 11 ciklov)
+
+	call writeNumber ; 48 197
+
+	call gotoLine2 ; 16 062
+
+	ldi r20, 'm' ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+
+	ldi r20, 'i' ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+
+	ldi r20, 'n' ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+
+	ldi r20, ':' ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+
+	; load timer, display
+	lds r16, minute_counter ; 2
+	call writeNumber ; 48 197
+
+	ret ; 2
+
+
+writeNumber: ; 48 195 ciklov
 	call div10_8bit ; 18
 	push r17 ; 1
 	call div10_8bit ; 18
@@ -237,28 +300,46 @@ writeNumber:
 	add r20, r26 ; 1
 	call func_send ; 39
 	call delay_1ms ; 16 004
-	ret
+	ret ; 2
 
-enable_PD3: ; 5 cycles
+gotoLine2: ; 16 060 ciklov
+	; goto line 2
+	call disable_PD3 ; 7
+	ldi r20, 0b1100_0000 ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+	call enable_PD3 ; 7
+	ret ; 2
+
+clearDisplay: ; 16 060 ciklov
+	; clear display
+	call disable_PD3 ; 7
+	ldi r20, 0b0000_0001 ; 1
+	call func_send ; 39
+	call delay_1ms ; 16 004
+	call enable_PD3 ; 7
+	ret ; 2
+
+enable_PD3: ; 5 ciklov
 	in r17, PORTD
 	ori r17, 0b0000_1000 ; set PD3
 	out PORTD, r17
 	ret
 
-disable_PD3: ; 5 cycles
+disable_PD3: ; 5 ciklov
 	in r17, PORTD ; 1
 	andi r17, 0b1111_0111 ; set PD3 1
 	out PORTD, r17 ; 1
 	ret ; 2
 
-return_home: ; 32 0050
+return_home: ; 32 0050 ciklov
 	ldi r20, 0b0000_0010 ; 1
 	call func_send ; 39
 	call delay_1ms ; 16 004
 	call delay_1ms ; 16 004
 	ret ; 2
 
-toggle_enable_pin: ; 9 cycles
+toggle_enable_pin: ; 9 ciklov
 	ldi r16,(1<<PINB0) ; 1
 	out PORTB, r16 ; 1
 	nop ; 1
@@ -280,7 +361,7 @@ func_set_H:
 	call toggle_enable_pin
 	ret
 
-func_send: ; 37 cycles
+func_send: ; 37 ciklov
 	mov r21, r20 ; 1
 	andi r21, 0b1111_0000 ; 1
 	in r17, PORTD ; 1
@@ -331,6 +412,6 @@ dobro:			ldi r17, 205	; more magic ; 1
 
 .dseg
 
-time_counter: .byte 1
+second_counter: .byte 1
+minute_counter: .byte 1
 interruptFlag: .byte 1
-
