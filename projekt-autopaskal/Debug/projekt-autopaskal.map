@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\lovro\projekt-avtopaskal\projekt-autopaskal\main.asm Tue Jan 04 21:19:27 2022
+AVRASM ver. 2.2.8  C:\Users\Okno na moji desni\Documents\projekt-avtopaskal\projekt-autopaskal\main.asm Tue Jan 04 23:45:06 2022
 
 
 EQU  SIGNATURE_000 0000001e
@@ -696,29 +696,29 @@ EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
 CSEG start        00000034
-CSEG int0setter   0000006b
-CSEG time_loop    000000c3
-CSEG func_set_H   00000169
-CSEG func_send    00000173
-CSEG delay_1ms    000000c8
-CSEG enable_PD3   00000151
+CSEG interrupt    0000006f
+CSEG time_loop    000000c5
+CSEG func_set_H   0000016b
+CSEG func_send    00000175
+CSEG delay_1ms    000000ca
+CSEG enable_PD3   00000153
 DSEG second_counter 00000100
 DSEG minute_counter 00000101
 DSEG interruptFlag 00000102
-CSEG gameLoop     000000b6
-CSEG resetStopwatch 00000070
-CSEG end_loop     0000007b
-CSEG displayTime  00000080
-CSEG clearDisplay 00000147
-CSEG disable_PD3  00000155
-CSEG return_home  00000159
-CSEG writeNumber  00000120
-CSEG gotoLine2    0000013d
-CSEG handleDisplay 000000e6
-CSEG delayTillEOS 000000d2
-CSEG L1           000000cd
-CSEG L2           000000d5
-CSEG incMinute    000000dd
-CSEG div10_8bit   00000185
-CSEG toggle_enable_pin 00000161
-CSEG dobro        00000187
+CSEG gameLoop     000000b8
+CSEG resetStopwatch 00000073
+CSEG end_loop     0000007e
+CSEG displayTime  00000083
+CSEG clearDisplay 00000149
+CSEG disable_PD3  00000157
+CSEG return_home  0000015b
+CSEG writeNumber  00000122
+CSEG gotoLine2    0000013f
+CSEG handleDisplay 000000e8
+CSEG delayTillEOS 000000d4
+CSEG L1           000000cf
+CSEG L2           000000d7
+CSEG incMinute    000000df
+CSEG div10_8bit   00000187
+CSEG toggle_enable_pin 00000163
+CSEG dobro        00000189

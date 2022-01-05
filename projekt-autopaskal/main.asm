@@ -22,7 +22,7 @@
 	.org 0x00
 	rjmp start
 	.org INT0addr
-	rjmp int0setter
+	rjmp interrupt
 	.org 0x034
 
 
@@ -41,11 +41,24 @@ start:
 	;---------------------------------------------------
 
 	;-----------INITIALIZE INTERRUPT 0------------------
-	ldi r16, (1<<ISC01)|(0<<ISC00)	
-	sts EICRA, r16
-	ldi r16, (1<<INT0)				
-	out EIMSK, r16					
-	sei
+	// Nastavi pin na input
+    ldi r16, 0b0000_0000
+    out DDRD, r16
+
+    // Nastavi pullup
+    ldi r16, 0b0000_0100
+    out PORTD, r16
+
+    // Nastavimo interrupt mode
+    ldi r16, 0b0000_0010
+    sts EICRA, r16
+
+    // Enablamo interrupt mask
+    ldi r16, 0x01
+    out EIMSK, r16
+    
+    // Uklopmo interrupt flag
+    sei
 	;---------------------------------------------------
 
 	;-----------SET OUTPUT PINS-------------------------
@@ -113,10 +126,9 @@ start:
 ;
 ;****************************************************************************************************
 
-int0setter:
+interrupt:
 	ldi r16, 1
 	sts interruptFlag, r16
-	cli
 	reti
 
 ;****************************************************************************************************
@@ -198,7 +210,6 @@ displayTime:
 	lds r16, minute_counter ; 2
 	call writeNumber ; 48 197
 
-	sei
 	jmp end_loop
 
 
